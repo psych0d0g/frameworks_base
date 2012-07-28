@@ -312,8 +312,6 @@ final class ActivityStack {
 
     private static final ActivityTrigger mActivityTrigger;
 
-    private final PowerManagerService mPm;
-
     static {
         if (SystemProperties.QCOM_HARDWARE) {
             mActivityTrigger = new ActivityTrigger();
