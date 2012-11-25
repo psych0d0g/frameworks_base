@@ -421,6 +421,7 @@ final class WiredAccessoryManager implements WiredAccessoryCallbacks {
             }
 
             public int computeNewHeadsetState(int headsetState, int switchState) {
+                switchState = (127 & switchState); // Mask out bit (1 << 7), needed for HTC kernels
                 int preserveMask = ~(mState1Bits | mState2Bits);
                 int setBits = ((switchState == 1) ? mState1Bits :
                               ((switchState == 2) ? mState2Bits : 0));
