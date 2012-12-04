@@ -77,8 +77,6 @@ public class LegacyUsbDeviceManager extends UsbDeviceManager {
     private static final String MASS_STORAGE_FILE_PATH =
             Resources.getSystem().getString(com.android.internal.R.string.config_legacyUmsLunFile);
 
-    private final Object mLock = new Object();
-
     private static final int MSG_UPDATE_STATE = 0;
     private static final int MSG_ENABLE_ADB = 1;
     private static final int MSG_SET_CURRENT_FUNCTION = 2;
@@ -98,10 +96,7 @@ public class LegacyUsbDeviceManager extends UsbDeviceManager {
 
     private final Context mContext;
     private final ContentResolver mContentResolver;
-
-    // @GuardedBy("mLock")
-    private UsbSettingsManager mCurrentSettings;
-
+    private final UsbSettingsManager mSettingsManager;
     private NotificationManager mNotificationManager;
     private final boolean mHasUsbAccessory;
     private boolean mUseUsbNotification;
@@ -153,10 +148,11 @@ public class LegacyUsbDeviceManager extends UsbDeviceManager {
         }
     };
 
-    public LegacyUsbDeviceManager(Context context) {
+    public LegacyUsbDeviceManager(Context context, UsbSettingsManager settingsManager) {
         super();
         mContext = context;
         mContentResolver = context.getContentResolver();
+        mSettingsManager = settingsManager;
         PackageManager pm = mContext.getPackageManager();
         mHasUsbAccessory = pm.hasSystemFeature(PackageManager.FEATURE_USB_ACCESSORY);
 
@@ -165,18 +161,6 @@ public class LegacyUsbDeviceManager extends UsbDeviceManager {
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
         mHandler = new LegacyUsbHandler(thread.getLooper());
-    }
-
-    public void setCurrentSettings(UsbSettingsManager settings) {
-        synchronized (mLock) {
-            mCurrentSettings = settings;
-        }
-    }
-
-    private UsbSettingsManager getCurrentSettings() {
-        synchronized (mLock) {
-            return mCurrentSettings;
-        }
     }
 
     @Override
@@ -536,7 +520,7 @@ public class LegacyUsbDeviceManager extends UsbDeviceManager {
                 case MSG_BOOT_COMPLETED:
                     mBootCompleted = true;
                     if (mCurrentAccessory != null) {
-                        getCurrentSettings().accessoryAttached(mCurrentAccessory);
+                        mSettingsManager.accessoryAttached(mCurrentAccessory);
                     }
                     break;
             }
@@ -552,7 +536,7 @@ public class LegacyUsbDeviceManager extends UsbDeviceManager {
                 if(DEBUG && !mUseUsbNotification) Slog.d(TAG, "!mUseUsbNotification");
             return;
             }
-           int id = 0;
+            int id = 0;
             Resources r = mContext.getResources();
             if (mConnected) {
                 if (containsFunction(mCurrentFunctions, UsbManager.USB_FUNCTION_MTP)) {
@@ -607,8 +591,7 @@ public class LegacyUsbDeviceManager extends UsbDeviceManager {
             if (mNotificationManager == null) return;
             final int id = com.android.internal.R.string.adb_active_notification_title;
             if (mAdbEnabled && mConnected) {
-                if ("0".equals(SystemProperties.get("persist.adb.notify")))
-                    return;
+                if ("0".equals(SystemProperties.get("persist.adb.notify"))) return;
 
                 if (!mAdbNotificationShown) {
                     Resources r = mContext.getResources();

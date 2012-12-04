@@ -1703,8 +1703,6 @@
   <java-symbol type="id" name="button_always" />
   <java-symbol type="integer" name="config_maxResolverActivityColumns" />
 
-  <java-symbol type="string" name="config_legacyUmsLunFile" />
-
   <!-- From SystemUI -->
   <java-symbol type="anim" name="push_down_in" />
   <java-symbol type="anim" name="push_down_out" />
