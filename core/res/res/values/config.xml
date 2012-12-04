@@ -1024,8 +1024,4 @@
         <item>250</item>
         <item>250</item>
     </integer-array>
-
-    <!-- Use legacy USB device manager. -->
-    <bool name="config_usesLegacyUsbDeviceManager">true</bool>
-
 </resources>

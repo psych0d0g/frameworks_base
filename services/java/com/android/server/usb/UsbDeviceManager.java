@@ -147,14 +147,6 @@ public class UsbDeviceManager {
         }
     };
 
-    // Dummy constructor to use when extending class
-    public UsbDeviceManager() {
-        mContext = null;
-        mContentResolver = null;
-        mSettingsManager = null;
-        mHasUsbAccessory = false;
-    }
-
     public UsbDeviceManager(Context context) {
         mContext = context;
         mContentResolver = context.getContentResolver();
