@@ -66,11 +66,14 @@ public class TorchToggle extends Toggle {
 
     @Override
     protected void onCheckChanged(boolean isChecked) {
-        if (isChecked) {
+        Intent i = new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT");
+        mContext.sendBroadcast(i);
+
+        /*if (isChecked) {
             mContext.sendBroadcast(new Intent(INTENT_TORCH_ON));
         } else {
             mContext.sendBroadcast(new Intent(INTENT_TORCH_OFF));
-        }
+        }*/
     }
 
     @Override
