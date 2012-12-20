@@ -84,6 +84,8 @@ int str16eq(uint16_t *a, const char *b)
 int svc_can_register(unsigned uid, uint16_t *name)
 {
     unsigned n;
+
+    ALOGD("svc_can_register %s", str8(name));
     
     if ((uid == 0) || (uid == AID_SYSTEM))
         return 1;
@@ -123,7 +125,7 @@ struct svcinfo *find_svc(uint16_t *s16, unsigned len)
 void svcinfo_death(struct binder_state *bs, void *ptr)
 {
     struct svcinfo *si = ptr;
-    ALOGI("service '%s' died\n", str8(si->name));
+    ALOGD("service '%s' died\n", str8(si->name));
     if (si->ptr) {
         binder_release(bs, si->ptr);
         si->ptr = 0;
@@ -141,7 +143,7 @@ void *do_find_service(struct binder_state *bs, uint16_t *s, unsigned len, unsign
     struct svcinfo *si;
     si = find_svc(s, len);
 
-//    ALOGI("check_service('%s') ptr = %p\n", str8(s), si ? si->ptr : 0);
+    ALOGD("check_service('%s') ptr = %p\n", str8(s), si ? si->ptr : 0);
     if (si && si->ptr) {
         if (!si->allow_isolated) {
             // If this service doesn't allow access from isolated processes,
@@ -162,8 +164,8 @@ int do_add_service(struct binder_state *bs,
                    void *ptr, unsigned uid, int allow_isolated)
 {
     struct svcinfo *si;
-    //ALOGI("add_service('%s',%p,%s) uid=%d\n", str8(s), ptr,
-    //        allow_isolated ? "allow_isolated" : "!allow_isolated", uid);
+    ALOGD("add_service('%s',%p,%s) uid=%d\n", str8(s), ptr,
+            allow_isolated ? "allow_isolated" : "!allow_isolated", uid);
 
     if (!ptr || (len == 0) || (len > 127))
         return -1;
@@ -279,6 +281,7 @@ int main(int argc, char **argv)
     struct binder_state *bs;
     void *svcmgr = BINDER_SERVICE_MANAGER;
 
+    ALOGD("servicemanager started\n");
     bs = binder_open(128*1024);
 
     if (binder_become_context_manager(bs)) {
