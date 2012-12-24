@@ -145,11 +145,12 @@ public class AokpTarget {
             takeScreenshot();
             return true;
         } else if (action.equals(ACTION_TORCH)) {
-            Intent intent = new Intent("android.intent.action.MAIN");
+            mContext.sendBroadcast(new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT"));
+            /*Intent intent = new Intent("android.intent.action.MAIN");
             intent.setComponent(ComponentName.unflattenFromString("com.aokp.Torch/.TorchActivity"));
             intent.addCategory("android.intent.category.LAUNCHER");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
+            mContext.startActivity(intent);*/
             return true;
         } else if (action.equals(ACTION_TODAY)) {
             long startMillis = System.currentTimeMillis();
