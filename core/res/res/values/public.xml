@@ -2034,4 +2034,6 @@
   <java-symbol type="layout" name="vibration_picker_dialog"/>
 
   <java-symbol type="bool" name="config_forceDisableHardwareKeyboard" />
+  <java-symbol type="integer" name="config_backKillTimeout" />
+  <java-symbol type="string" name="app_killed_message" />
 </resources>
