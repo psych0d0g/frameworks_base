@@ -1312,7 +1312,6 @@
   <java-symbol type="integer" name="config_lidKeyboardAccessibility" />
   <java-symbol type="integer" name="config_lidNavigationAccessibility" />
   <java-symbol type="integer" name="config_lidOpenRotation" />
-  <java-symbol type="integer" name="config_longPressOnHomeBehavior" />
   <java-symbol type="layout" name="global_actions_item" />
   <java-symbol type="layout" name="global_actions_silent_mode" />
   <java-symbol type="layout" name="keyguard_screen_glogin_unlock" />
@@ -3839,4 +3838,7 @@
   <java-symbol type="id" name="time_alt" />
   <java-symbol type="id" name="timeDisplayHours" />
   <java-symbol type="id" name="timeDisplayMinutes" />
+  
+  <!-- Hardware Key ReMapping -->
+  <java-symbol type="integer" name="config_deviceHardwareKeys" />
 </resources>
