@@ -2791,6 +2791,13 @@ public final class Settings {
         };
 
         /**
+         * Whether or not to launch default music player when headset is connected
+         * @hide
+         */
+        public static final String HEADSET_CONNECT_PLAYER = "headset_connect_player";
+
+        /**
+         * Whether national data roaming should be used.
          * @hide
          */
         public static final String[] NAVIGATION_LONGPRESS_ACTIVITIES = new String[] {
