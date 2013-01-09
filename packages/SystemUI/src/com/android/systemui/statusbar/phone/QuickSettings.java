@@ -482,9 +482,12 @@ class QuickSettings {
         getService().animateCollapsePanels();
     }
 
-    private QuickSettingsTileView getTile(int tile, ViewGroup parent, LayoutInflater inflater) {
+    private QuickSettingsTileView getTile(Integer tile, ViewGroup parent, LayoutInflater inflater) {
         final Resources r = mContext.getResources();
         QuickSettingsTileView quick = null;
+        if(tile == null) {
+        	return quick;
+        }
         switch (tile) {
             case USER_TILE:
                 quick = (QuickSettingsTileView)
@@ -1339,9 +1342,15 @@ class QuickSettings {
         if (parent.getChildCount() > 0)
             parent.removeAllViews();
         toggles = getCustomUserTiles();
+        if(toggles == null || toggles.size() == 0){
+        	return;
+        }
 
-        if (!toggles.get(0).equals("")) {
+        if (toggles.get(0) != null && !toggles.get(0).equals("")) {
             for (String toggle : toggles) {
+            	if (toggle == null){
+            		continue;
+            	}
                 View v = getTile(getToggleMap().get(toggle), parent, inflater);
                 if(v != null) {
                     parent.addView(v);
