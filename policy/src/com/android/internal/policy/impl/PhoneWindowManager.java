@@ -1447,10 +1447,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
         boolean showByDefault = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_showNavigationBar);
-        showByDefault = showByDefault || Settings.System.getBoolean(resolver,
-                        Settings.System.NAVIGATION_BAR_SHOW, showByDefault);
         boolean showNavBarNow = Settings.System.getBoolean(resolver,
                 Settings.System.NAVIGATION_BAR_SHOW_NOW, showByDefault);
+        // maxwen: global enablement should overrule now setting
+        // like in setInitialDisplaySize
+        showNavBarNow = showNavBarNow && Settings.System.getBoolean(resolver,
+                        Settings.System.NAVIGATION_BAR_SHOW, showByDefault);
+
         int NavHeight = Settings.System.getInt(resolver,
                 Settings.System.NAVIGATION_BAR_HEIGHT, 0);
         int NavHeightLand = Settings.System.getInt(resolver,
@@ -1463,7 +1466,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mUserNavBarWidth = NavWidth;
             resetScreenHelper();
         }
-        if (mHasNavigationBar != showNavBarNow) {
+        if ( mHasNavigationBar != showNavBarNow) {
             mHasNavigationBar = showNavBarNow;
             resetScreenHelper();
         }

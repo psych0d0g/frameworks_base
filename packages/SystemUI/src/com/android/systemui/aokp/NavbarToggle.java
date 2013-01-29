@@ -38,10 +38,10 @@ public class NavbarToggle extends Activity  {
   @Override
   public void onResume() {
     super.onResume();
-    final boolean NavOn = Settings.System.getInt(getContentResolver(),
-      Settings.System.NAVIGATION_BAR_SHOW_NOW, 1) == 1;
-    Settings.System.putInt(getContentResolver(),
-      Settings.System.NAVIGATION_BAR_SHOW_NOW,(!NavOn) ? 1 : 0);
+    final boolean NavOn = Settings.System.getBoolean(getContentResolver(),
+      Settings.System.NAVIGATION_BAR_SHOW_NOW, true);
+    Settings.System.putBoolean(getContentResolver(),
+      Settings.System.NAVIGATION_BAR_SHOW_NOW,(!NavOn));
     this.finish();
   }
 }
