@@ -72,8 +72,11 @@ public class SystemUIService extends Service {
     public void onCreate() {
         // Tell the accessibility layer that this process will
         // run as the current user, i.e. run across users.
-        AccessibilityManager.createAsSharedAcrossUsers(this);
-
+        try {
+        	AccessibilityManager.createAsSharedAcrossUsers(this);
+		} catch(IllegalStateException e){
+		}
+		
         // Pick status bar or system bar.
         IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
         try {
