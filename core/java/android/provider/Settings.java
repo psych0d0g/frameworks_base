@@ -2828,7 +2828,20 @@ public final class Settings {
           */
          public static final String NAVIGATION_BAR_STATUS_HIDE_LOCKSCREEN_INFO = "navigation_bar_status_hide_lockscreen_info";
 
-    	 /**
+        /**
+         * Used as a flag to determine if we have statusbar hidden
+         * @hide
+         */
+        public static final String STATUSBAR_HIDDEN = "statusbar_hidden";
+        
+        /**
+         * Statusbar toggle for quick settings
+         * &hide
+         */
+        public static final String STATUSBAR_QUICK_TOGGLE = "statusbar_quick_toggle";
+
+    	  /**
+>>>>>>> 3840e89... FW: Status Bar Hide toggle (1/3)
          * Show the NavBar dialog in Power menu
          * @hide
          */
