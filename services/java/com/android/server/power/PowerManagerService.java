@@ -1647,7 +1647,7 @@ public final class PowerManagerService extends IPowerManager.Stub
 
             mDisplayPowerRequest.blockScreenOn = mScreenOnBlocker.isHeld();
 
-            mDisplayReady = mDisplayPowerController.requestPowerState(mDisplayPowerRequest,
+            mDisplayReady = mSystemReady && mDisplayPowerController.requestPowerState(mDisplayPowerRequest,
                     mRequestWaitForNegativeProximity);
             mRequestWaitForNegativeProximity = false;
 

@@ -389,9 +389,8 @@ final class DisplayPowerController {
         mButtonlight = mLights.getLight(LightsService.LIGHT_ID_BUTTONS);
         
         mTwilight = twilight;
-
-        mSensorManager = new SystemSensorManager(mHandler.getLooper());
-        mDisplayManager = (DisplayManager)mContext.getSystemService(Context.DISPLAY_SERVICE);
+        mSensorManager = sensorManager;
+        mDisplayManager = displayManager;
 
         final Resources resources = mContext.getResources();
                 
