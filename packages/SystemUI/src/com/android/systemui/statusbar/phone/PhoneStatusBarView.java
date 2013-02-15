@@ -19,6 +19,7 @@ package com.android.systemui.statusbar.phone;
 import java.util.List;
 
 import android.app.ActivityManager;
+import android.app.KeyguardManager;
 import android.app.StatusBarManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;

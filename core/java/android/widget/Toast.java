@@ -374,6 +374,7 @@ public class Toast {
                 // remove the old view if necessary
                 handleHide();
                 mView = mNextView;
+
                 Context context = mView.getContext();
                 if (context.getApplicationContext() != null) {
                     // Use application context, except when called from system

@@ -1415,6 +1415,7 @@ public class QuickSettings {
         if (parent.getChildCount() > 0)
             parent.removeAllViews();
         toggles = getCustomUserTiles();
+
         if(toggles == null || toggles.size() == 0){
         	return;
         }
