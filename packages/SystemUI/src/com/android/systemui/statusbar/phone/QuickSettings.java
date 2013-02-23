@@ -124,7 +124,7 @@ public class QuickSettings {
     private static final int BATTERY_TILE = 9;
     private static final int AIRPLANE_TILE = 10;
     private static final int BLUETOOTH_TILE = 11;
-    //private static final int SWAGGER_TILE = 12;
+    private static final int SWAGGER_TILE = 12;
     private static final int VIBRATE_TILE = 13;
     private static final int SILENT_TILE = 14;
     private static final int FCHARGE_TILE = 15;
@@ -160,7 +160,7 @@ public class QuickSettings {
     public static final String BATTERY_TOGGLE = "BATTERY";
     public static final String AIRPLANE_TOGGLE = "AIRPLANE_MODE";
     public static final String BLUETOOTH_TOGGLE = "BLUETOOTH";
-    //public static final String SWAGGER_TOGGLE = "SWAGGER";
+    public static final String SWAGGER_TOGGLE = "SWAGGER";
     public static final String VIBRATE_TOGGLE = "VIBRATE";
     public static final String SILENT_TOGGLE = "SILENT";
     public static final String FCHARGE_TOGGLE = "FCHARGE";
