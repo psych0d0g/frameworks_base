@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.FileObserver;
-import android.util.Log;
 
 import com.android.systemui.R;
 
