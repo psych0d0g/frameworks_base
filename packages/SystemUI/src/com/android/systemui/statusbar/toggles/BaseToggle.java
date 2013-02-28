@@ -35,6 +35,7 @@ public abstract class BaseToggle
     protected int mStyle;
 
     private Drawable mIconDrawable = null;
+    private int mIconLevel = -1;
     private CharSequence mLabelText = null;
     private int mTextSize = 12;
 
@@ -96,6 +97,10 @@ public abstract class BaseToggle
         mIconId = -1;
     }
 
+    protected final void setIconLevel(int level) {
+        mIconLevel = level;
+    }
+
     protected void cleanup() {
         mHandler.removeCallbacks(mUpdateViewRunnable);
         for (BroadcastReceiver br : mRegisteredReceivers) {
@@ -146,8 +151,9 @@ public abstract class BaseToggle
     }
 
     protected final void scheduleViewUpdate() {
-        mHandler.removeCallbacks(mUpdateViewRunnable);
-        mHandler.postDelayed(mUpdateViewRunnable, 100);
+        // mHandler.removeCallbacks(mUpdateViewRunnable);
+        if (!mHandler.hasCallbacks(mUpdateViewRunnable))
+            mHandler.postDelayed(mUpdateViewRunnable, 100);
     }
 
     protected final void startActivity(String a) {
@@ -185,6 +191,9 @@ public abstract class BaseToggle
             if (mIcon != null) {
                 if (mIconDrawable != null) {
                     mIcon.setImageDrawable(mIconDrawable);
+                    if (mIconLevel != -1) {
+                        mIcon.setImageLevel(mIconLevel);
+                    }
                 }
             }
 
@@ -192,6 +201,9 @@ public abstract class BaseToggle
             if (mIcon != null) {
                 if (mIconDrawable != null) {
                     mIcon.setImageDrawable(mIconDrawable);
+                    if (mIconLevel != -1) {
+                        mIcon.setImageLevel(mIconLevel);
+                    }
                 }
             }
         }
