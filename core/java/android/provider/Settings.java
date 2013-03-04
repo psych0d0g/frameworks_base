@@ -2449,7 +2449,7 @@ public final class Settings {
          */
         public static final String STATUSBAR_BATTERY_ICON = "statusbar_battery_icon";
 
-        /**
+		/**
          * AM/PM Style for clock options
          * 0 - Normal AM/PM
          * 1 - Small AM/PM
@@ -3127,6 +3127,19 @@ public final class Settings {
          */
         public static final String CHOOSE_FASTTOGGLE_SIDE = "choose_fasttoggle_side";
 
+        /**
+         * Whether electronic beam animation is enabled or not
+         * @hide
+         */
+        public static final String SYSTEM_POWER_ENABLE_CRT_OFF = "system_power_enable_crt_off";
+        
+        /**
+         * Electronic beam animation mode
+         * 0 = always horizontal, 1 = always vertical, 2 = dependent on orientation
+         * @hide
+         */
+        public static final String SYSTEM_POWER_CRT_MODE = "system_power_crt_mode";
+        
         /**
          * @hide
          */

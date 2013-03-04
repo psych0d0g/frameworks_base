@@ -45,7 +45,6 @@ import android.util.FloatMath;
 import android.util.Slog;
 import android.util.Spline;
 import android.util.TimeUtils;
-import android.view.Display;
 import android.provider.Settings;
 
 import java.io.PrintWriter;
@@ -227,6 +226,10 @@ final class DisplayPowerController {
     // True if we should fade the screen while turning it off, false if we should play
     // a stylish electron beam animation instead.
     private boolean mElectronBeamFadesConfig;
+
+    // Slim settings - override config for ElectronBeam
+    private boolean mElectronBeamOffEnabled;
+    private int mElectronBeamMode;
 
     // The pending power request.
     // Initially null until the first call to requestPowerState.
@@ -561,7 +564,8 @@ final class DisplayPowerController {
 
     private void initialize() {
         mPowerState = new DisplayPowerState(
-                new ElectronBeam(mDisplayManager), mDisplayBlanker,
+                new ElectronBeam(mDisplayManager, mElectronBeamMode),
+                mDisplayBlanker,
                 mLights.getLight(LightsService.LIGHT_ID_BACKLIGHT));
 
         mElectronBeamOnAnimator = ObjectAnimator.ofFloat(
@@ -628,6 +632,15 @@ final class DisplayPowerController {
             }
 
             mustNotify = !mDisplayReadyLocked;
+        }
+
+        // update crt settings here
+        mElectronBeamOffEnabled = mPowerRequest.electronBeamOffEnabled;
+
+        // update crt mode settings and force initialize if value changed
+        if (mElectronBeamMode != mPowerRequest.electronBeamMode) {
+            mElectronBeamMode = mPowerRequest.electronBeamMode;
+            mustInitialize = true;
         }
 
         // Initialize things the first time the power state is changed.
@@ -749,7 +762,7 @@ final class DisplayPowerController {
                         if (mPowerState.getElectronBeamLevel() == 0.0f) {
                             setScreenOn(false);
                         } else if (mPowerState.prepareElectronBeam(
-                                mElectronBeamFadesConfig ?
+                                !mElectronBeamOffEnabled ?
                                         ElectronBeam.MODE_FADE :
                                                 ElectronBeam.MODE_COOL_DOWN)
                                 && mPowerState.isScreenOn()) {
