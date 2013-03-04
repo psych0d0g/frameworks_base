@@ -1717,6 +1717,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public void completePartialFlip() {
+        if (!mUserSetup) return;
         if (mHasFlipSettings) {
             if (mFlipSettingsView.getVisibility() == View.VISIBLE) {
                 flipToSettings();
@@ -1727,6 +1728,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public void partialFlip(float progress) {
+        if (!mUserSetup) return;
         if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
         if (mScrollViewAnim != null) mScrollViewAnim.cancel();
         if (mSettingsButtonAnim != null) mSettingsButtonAnim.cancel();

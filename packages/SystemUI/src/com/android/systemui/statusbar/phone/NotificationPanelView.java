@@ -200,6 +200,10 @@ public class NotificationPanelView extends PanelView {
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
+                	// don't allow swipe panel with non-tile toggles
+                	if(mToggleStyle != 0) {
+                		break;
+                	}
                     final float deltaX = Math.abs(event.getX(0) - mGestureStartX);
                     final float deltaY = Math.abs(event.getY(0) - mGestureStartY);
                     final float maxDeltaY = getHeight() * STATUS_BAR_SWIPE_VERTICAL_MAX_PERCENTAGE;
@@ -247,6 +251,10 @@ public class NotificationPanelView extends PanelView {
                     }
                     break;
                 case MotionEvent.ACTION_UP:
+                	// don't allow swipe panel with non-tile toggles
+                	if(mToggleStyle != 0) {
+                		break;
+                	}
                     swipeFlipJustFinished = mSwipeTriggered;
                     mSwipeTriggered = false;
                     mTrackingSwipe = false;
@@ -257,11 +265,11 @@ public class NotificationPanelView extends PanelView {
                     mStatusBar.switchToSettings();
                 } else {
                     // Do not flip if the drag event started within the top bar
-                        if (MotionEvent.ACTION_DOWN == event.getActionMasked() && event.getY(0) < mHandleBarHeight ) {
-                            mStatusBar.switchToSettings();
-                        } else {
-                            mStatusBar.flipToSettings();
-                        }
+                    if (MotionEvent.ACTION_DOWN == event.getActionMasked() && event.getY(0) < mHandleBarHeight ) {
+                        mStatusBar.switchToSettings();
+                    } else {
+                        mStatusBar.flipToSettings();
+                    }
                 }
                 mOkToFlip = false;            
             } else if (mSwipeTriggered) {
