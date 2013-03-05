@@ -3574,6 +3574,14 @@ public final class Settings {
          */
         public static final String NOTIFICATION_CONVERT_SOUND_TO_VIBRATION = "convert_sound_to_vibration";
 
+       /**
+         * @hide
+         * Show Wifi network name in notification shade
+         * 0 - don't show
+         * 1 - show
+         */
+        public static final String NOTIFICATION_SHOW_WIFI_SSID = "notification_show_wifi_ssid";
+
         /**
          * boolean value. toggles using arrow key locations on nav bar
          * as left and right dpad keys
@@ -3639,6 +3647,7 @@ public final class Settings {
          * @hide
          */        
         public static final String FAST_CHARGE_STATE = "fast_charge_state";
+
     }
 
     /**
