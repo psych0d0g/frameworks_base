@@ -532,7 +532,7 @@ public class ThrottleService extends IThrottleManager.Stub {
                     incWrite = entry.txBytes - mLastWrite;
                 } else {
                     // missing iface, assume stats are 0
-                    Slog.w(TAG, "unable to find stats for iface " + mIface);
+                    //Slog.w(TAG, "unable to find stats for iface " + mIface);
                 }
 
                 // handle iface resets - on some device the 3g iface comes and goes and gets
