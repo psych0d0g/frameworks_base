@@ -251,8 +251,10 @@ class WallpaperManagerService extends IWallpaperManager.Stub {
                             && (mWallpaper.lastDiedTime + MIN_WALLPAPER_CRASH_TIME)
                                 > SystemClock.uptimeMillis()
                             && mWallpaper.userId == mCurrentUserId) {
-                        Slog.w(TAG, "Reverting to built-in wallpaper!");
-                        clearWallpaperLocked(true, mWallpaper.userId, null);
+                        // maxwen: else calls to restartSystemUI might cause the
+                        // wallpaper to be cleared
+                        //Slog.w(TAG, "Reverting to built-in wallpaper!");
+                        //clearWallpaperLocked(true, mWallpaper.userId, null);
                     }
                 }
             }
