@@ -2324,6 +2324,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
             }
             return -1;
+        // maxwen: DONT MERGE - special handling of navbar menu key
+        } else if (keyCode == KeyEvent.KEYCODE_KANA) {
+            if (!down) {
+               	performKeyAction(KEY_ACTION_MENU);
+        		return -1;
+        	}
         } else if (keyCode == KeyEvent.KEYCODE_MENU) {
             // Hijack modified menu keys for debugging features
             final int chordBug = KeyEvent.META_SHIFT_ON;

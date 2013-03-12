@@ -391,7 +391,8 @@ public class NavigationBarView extends LinearLayout {
                 v.setLayoutParams(getLayoutParams(landscape, (mCurrentUIMode == 1) ? 80 : 40));
 
                 v.setId(R.id.menu);
-                v.setCode(KeyEvent.KEYCODE_MENU);
+                // maxwen: DONT MERGE - special handling of navbar menu key
+                v.setCode(KeyEvent.KEYCODE_KANA);
                 if (mCurrentUIMode == 1) {
                     v.setImageResource(R.drawable.ic_sysbar_menu_big);
                     v.setVisibility(View.GONE);
@@ -410,7 +411,8 @@ public class NavigationBarView extends LinearLayout {
                 v.setLayoutParams(getLayoutParams(landscape, (mCurrentUIMode == 1) ? 80 : 40));
 
                 v.setId(R.id.menu_left);
-                v.setCode(KeyEvent.KEYCODE_MENU);
+                // maxwen: DONT MERGE - special handling of navbar menu key
+                v.setCode(KeyEvent.KEYCODE_KANA);
                 if (mCurrentUIMode == 1) {
                     v.setImageResource(R.drawable.ic_sysbar_menu_big);
                     v.setVisibility(View.GONE);
