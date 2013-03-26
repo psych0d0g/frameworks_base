@@ -197,7 +197,10 @@ public class NotificationPanelView extends PanelView {
                                 && !mFastToggleEnabled) {
                             shouldFlip = true;
                         }
+                    } else if (mFastToggleEnabled && mFastTogglePos == 3) {
+                    	shouldFlip = false;
                     }
+
                     break;
                 case MotionEvent.ACTION_MOVE:
                 	// don't allow swipe panel with non-tile toggles
