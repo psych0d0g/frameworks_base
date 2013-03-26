@@ -15,10 +15,6 @@
  */
 package com.android.internal.policy.impl.keyguard;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-
 import android.animation.ObjectAnimator;
 import android.app.ActivityManagerNative;
 import android.app.SearchManager;
@@ -53,7 +49,6 @@ import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
 import com.android.internal.widget.multiwaveview.TargetDrawable;
 import com.android.internal.R;
-import com.android.internal.widget.multiwaveview.TargetDrawable;
 
 import java.util.ArrayList;
 
@@ -124,7 +119,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
             break;
         }
     }
->>>>>>> c73e5be... FW: Lockscreen rework WIP
 
     OnTriggerListener mOnTriggerListener = new OnTriggerListener() {
 
@@ -216,7 +210,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
 
     public KeyguardSelectorView(Context context) {
         this(context, null);
-        mCreationOrientation = Resources.getSystem().getConfiguration().orientation;
     }
 
     public KeyguardSelectorView(Context context, AttributeSet attrs) {
@@ -239,38 +232,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
 
     public void setCarrierArea(View carrierArea) {
         mFadeView = carrierArea;
-    }
-
-    public boolean isScreenLarge() {
-        final int screenSize = Resources.getSystem().getConfiguration().screenLayout &
-                Configuration.SCREENLAYOUT_SIZE_MASK;
-        boolean isScreenLarge = screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
-                screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
-        return isScreenLarge;
-    }
-
-    private StateListDrawable getLayeredDrawable(Drawable back, Drawable front, int inset, boolean frontBlank) {
-        Resources res = getResources();
-        InsetDrawable[] inactivelayer = new InsetDrawable[2];
-        InsetDrawable[] activelayer = new InsetDrawable[2];
-        //maxwen: dont like that circle around
-        //inactivelayer[0] = new InsetDrawable(res.getDrawable(com.android.internal.R.drawable.ic_lockscreen_lock_pressed), 0, 0, 0, 0);
-        // just use an "empty" image
-        inactivelayer[0] = new InsetDrawable(res.getDrawable(com.android.internal.R.drawable.ic_lockscreen_empty), 0, 0, 0, 0);
-        inactivelayer[1] = new InsetDrawable(front, inset, inset, inset, inset);
-        activelayer[0] = new InsetDrawable(back, 0, 0, 0, 0);
-        activelayer[1] = new InsetDrawable(frontBlank ? res.getDrawable(android.R.color.transparent) : front, inset, inset, inset, inset);
-        StateListDrawable states = new StateListDrawable();
-        LayerDrawable inactiveLayerDrawable = new LayerDrawable(inactivelayer);
-        inactiveLayerDrawable.setId(0, 0);
-        inactiveLayerDrawable.setId(1, 1);
-        LayerDrawable activeLayerDrawable = new LayerDrawable(activelayer);
-        activeLayerDrawable.setId(0, 0);
-        activeLayerDrawable.setId(1, 1);
-        states.addState(TargetDrawable.STATE_INACTIVE, inactiveLayerDrawable);
-        states.addState(TargetDrawable.STATE_ACTIVE, activeLayerDrawable);
-        states.addState(TargetDrawable.STATE_FOCUSED, activeLayerDrawable);
-        return states;
     }
 
     public boolean isTargetPresent(int resId) {
