@@ -2046,4 +2046,10 @@
   <!-- Kill App -->
   <java-symbol type="string" name="app_killed_message" />
   <java-symbol type="integer" name="config_backKillTimeout" />
+
+  <!-- Profiles -->
+  <java-symbol type="string" name="wildcardProfile" />
+  <java-symbol type="string" name="global_action_choose_profile" />
+  <java-symbol type="drawable" name="ic_lock_profile" />
+  <java-symbol type="xml" name="profile_default" /> 
 </resources>
