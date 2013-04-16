@@ -2894,6 +2894,12 @@ public final class Settings {
         public static final String SCREENSHOT_TOGGLE_DELAY = "screenshot_toggle_delay";
 
     	/**
+         * Select Classic Recents menu style [GB-]
+         * @hide
+         */
+        public static final String CLASSIC_RECENTS_MENU = "classic_recents_menu";
+
+         /**
          * Show the NavBar dialog in Power menu
          * @hide
          */
