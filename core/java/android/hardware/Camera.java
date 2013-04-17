@@ -1487,7 +1487,6 @@ public class Camera {
      * @see #getParameters()
      */
     public void setParameters(Parameters params) {
-        Log.v(TAG, "setParameters:"+params.flatten());
         native_setParameters(params.flatten());
     }
 
