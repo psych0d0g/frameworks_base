@@ -169,12 +169,18 @@ public class AwesomeAction {
                 mContext.sendBroadcast(new Intent("android.settings.SHOW_INPUT_METHOD_PICKER"));
                 break;
             case ACTION_TORCH:
-            	mContext.sendBroadcast(new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT"));
-                /*Intent intentTorch = new Intent("android.intent.action.MAIN");
-                intentTorch.setComponent(ComponentName.unflattenFromString("com.aokp.Torch/.TorchActivity"));
-                intentTorch.addCategory("android.intent.category.LAUNCHER");
-                intentTorch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intentTorch);*/
+                boolean useCMTorch = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_useCMTorch);
+
+                if(useCMTorch){
+            	    mContext.sendBroadcast(new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT"));
+            	} else {
+                    Intent intentTorch = new Intent("android.intent.action.MAIN");
+                    intentTorch.setComponent(ComponentName.unflattenFromString("com.aokp.Torch/.TorchActivity"));
+                    intentTorch.addCategory("android.intent.category.LAUNCHER");
+                    intentTorch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intentTorch);
+                }
                 break;
             case ACTION_TODAY:
                 long startMillis = System.currentTimeMillis();
