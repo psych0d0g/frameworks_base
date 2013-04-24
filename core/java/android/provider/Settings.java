@@ -2880,8 +2880,7 @@ public final class Settings {
          */
         public static final String SCREENSHOT_TOGGLE_DELAY = "screenshot_toggle_delay";
 
-    	  /**
->>>>>>> 3840e89... FW: Status Bar Hide toggle (1/3)
+    	/**
          * Show the NavBar dialog in Power menu
          * @hide
          */
