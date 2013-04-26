@@ -1189,6 +1189,26 @@ public class PhoneStatusBar extends BaseStatusBar {
         setAreThereNotifications();
     }
 
+    private void updateStatusBarVisibility() {
+        Log.d(TAG, "updateStatusBarVisibility");
+        
+        if (!Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.STATUSBAR_HIDDEN, false)){
+            return;
+        }
+        if (Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.STATUSBAR_AUTO_EXPAND_HIDDEN, false)) {
+            Log.d(TAG, "auto-expand statusbar");
+            Settings.System.putBoolean(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_HIDDEN_NOW,
+                    (mNotificationData.size() == 0) ? true : false);
+        } else {
+            Log.d(TAG, "hide statusbar");
+            Settings.System.putBoolean(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_HIDDEN_NOW, true);
+        }
+    } 
+
     private void loadNotificationShade() {
         if (mPile == null) return;
 
@@ -1382,6 +1402,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                 .start();
         }
 
+        if (mNotificationData.size() < 2){
+            updateStatusBarVisibility(); 
+        }
+        
         updateCarrierAndWifiLabelVisibility(false);
     }
 
@@ -2920,11 +2944,16 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.RIBBON_ICON_COLORIZE[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.RIBBON_TEXT_COLOR[AokpRibbonHelper.QUICK_SETTINGS]), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_HIDDEN_NOW), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_AUTO_EXPAND_HIDDEN), false, this);
         }
 
          @Override
         public void onChange(boolean selfChange) {
             updateSettings();
+            updateStatusBarVisibility();
         }
     }
 
