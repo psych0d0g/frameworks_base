@@ -1069,7 +1069,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             mNavbarVisible = Settings.System.getBoolean(mContext.getContentResolver(),
                     Settings.System.NAVIGATION_BAR_SHOW_NOW, false);
 
-            mStatusBarVisible = Settings.System.getBoolean(mContext.getContentResolver(), Settings.System.STATUSBAR_HIDDEN, false) && Settings.System.getBoolean(mContext.getContentResolver(), Settings.System.STATUSBAR_HIDDEN_NOW, false);      
+            mStatusBarVisible = Settings.System.getBoolean(mContext.getContentResolver(), 
+                    Settings.System.STATUSBAR_HIDDEN_NOW, false);      
 
             View v = inflater.inflate(R.layout.global_actions_navbar_mode, parent, false);
 
@@ -1114,8 +1115,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         private void updaHiddenStatusbar(boolean value) {
-            Settings.System.putBoolean(mContext.getContentResolver(),
-                    Settings.System.STATUSBAR_HIDDEN, value);
             Settings.System.putBoolean(mContext.getContentResolver(),
                     Settings.System.STATUSBAR_HIDDEN_NOW, value);
         }
