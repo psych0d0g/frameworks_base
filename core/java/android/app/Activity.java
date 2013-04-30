@@ -2398,6 +2398,7 @@ public class Activity extends ContextThemeWrapper
     boolean mightBeMyGesture = false;
     float tStatus;
     boolean isFullScreenApp = false;
+    int swipeTimeout = 5000;
     
     /**
      * Called to process touch screen events.  You can override this to
@@ -2423,6 +2424,9 @@ public class Activity extends ContextThemeWrapper
                                 Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN, false);
                         
                         if (swipeEnabled){
+                            // get user timeout, default at 5 sec.
+                            swipeTimeout = Settings.System.getInt(getContentResolver(), 
+                                Settings.System.STATUSBAR_SWIPE_TIMEOUT, 5000); 
                             mightBeMyGesture = true;
                         }
                         
@@ -2446,7 +2450,7 @@ public class Activity extends ContextThemeWrapper
                                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                                     } 
                                 }               
-                            }, 5000);
+                            }, swipeTimeout);
                         }
                         
                         mightBeMyGesture = false;

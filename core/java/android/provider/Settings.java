@@ -2870,11 +2870,17 @@ public final class Settings {
         public static final String STATUSBAR_AUTO_EXPAND_HIDDEN = "statusbar_auto_expand_hidden";
 
         /**
-         * Used as a flag to determine if we have audo-expand statusbar enabled
+         * Used as a flag to determine if we have swipe down statusbar enabled
          * @hide
          */
         public static final String STATUSBAR_SWIPE_FOR_FULLSCREEN = "statusbar_swipe_for_fullscreen";
         
+        /**
+         * Allows hidden swipe down statusbar timeout to be configured
+         * @hide
+         */
+        public static final String STATUSBAR_SWIPE_TIMEOUT = "statusbar_swipe_timeout"; 
+
         /**
          * Statusbar toggle for quick settings
          * @hide
