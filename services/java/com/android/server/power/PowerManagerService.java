@@ -920,6 +920,7 @@ public final class PowerManagerService extends IPowerManager.Stub
 
     @Override // Binder call
     public void wakeUp(long eventTime) {
+        Slog.i(TAG, "wakeUpFromBinder ", new RuntimeException());
         if (eventTime > SystemClock.uptimeMillis()) {
             throw new IllegalArgumentException("event time must not be in the future");
         }
@@ -936,6 +937,7 @@ public final class PowerManagerService extends IPowerManager.Stub
 
     // Called from native code.
     private void wakeUpFromNative(long eventTime) {
+        Slog.i(TAG, "wakeUpFromNative");
         wakeUpInternal(eventTime);
     }
 

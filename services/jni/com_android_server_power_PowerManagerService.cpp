@@ -118,6 +118,8 @@ void android_server_PowerManagerService_wakeUp(nsecs_t eventTime) {
     if (gPowerManagerServiceObj) {
         JNIEnv* env = AndroidRuntime::getJNIEnv();
 
+        ALOGD("android_server_PowerManagerService_wakeUp");
+        
         env->CallVoidMethod(gPowerManagerServiceObj,
                 gPowerManagerServiceClassInfo.wakeUpFromNative,
                 nanoseconds_to_milliseconds(eventTime));
@@ -129,6 +131,8 @@ void android_server_PowerManagerService_goToSleep(nsecs_t eventTime) {
     if (gPowerManagerServiceObj) {
         JNIEnv* env = AndroidRuntime::getJNIEnv();
 
+        ALOGD("android_server_PowerManagerService_goToSleep");
+        
         env->CallVoidMethod(gPowerManagerServiceObj,
                 gPowerManagerServiceClassInfo.goToSleepFromNative,
                 nanoseconds_to_milliseconds(eventTime), 0);

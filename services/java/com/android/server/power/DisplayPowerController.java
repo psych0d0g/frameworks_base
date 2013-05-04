@@ -720,6 +720,8 @@ final class DisplayPowerController {
         // Animate the screen on or off.
         if (!mScreenOffBecauseOfProximity) {
             if (wantScreenOn(mPowerRequest.screenState)) {
+                Slog.d(TAG, "requestPowerState: wantScreenOn(mPowerRequest.screenState)="+wantScreenOn(mPowerRequest.screenState)); 
+
                 // Want screen on.
                 // Wait for previous off animation to complete beforehand.
                 // It is relatively short but if we cancel it and switch to the
@@ -755,6 +757,8 @@ final class DisplayPowerController {
                     }
                 }
             } else {
+                Slog.d(TAG, "requestPowerState: wantScreenOn(mPowerRequest.screenState)="+wantScreenOn(mPowerRequest.screenState)); 
+
                 // Want screen off.
                 // Wait for previous on animation to complete beforehand.
                 if (!mElectronBeamOnAnimator.isStarted()) {

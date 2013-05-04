@@ -97,7 +97,7 @@ import com.android.internal.widget.LockPatternUtils;
 public class KeyguardViewMediator {
     private static final int KEYGUARD_DISPLAY_TIMEOUT_DELAY_DEFAULT = 30000;
     final static boolean DEBUG = false;
-    private final static boolean DBG_WAKE = false;
+    private final static boolean DBG_WAKE = true;
 
     private final static String TAG = "KeyguardViewMediator";
 
@@ -1032,7 +1032,7 @@ public class KeyguardViewMediator {
      * @param keyCode The keycode of the key that woke the device
      */
     public void onWakeKeyWhenKeyguardShowingTq(int keyCode) {
-        if (DEBUG) Log.d(TAG, "onWakeKeyWhenKeyguardShowing(" + keyCode + ")");
+        if (DBG_WAKE) Log.d(TAG, "onWakeKeyWhenKeyguardShowing(" + keyCode + ")");
 
         // give the keyguard view manager a chance to adjust the state of the
         // keyguard based on the key that woke the device before poking
@@ -1051,7 +1051,7 @@ public class KeyguardViewMediator {
      * action should be posted to a handler.
      */
     public void onWakeMotionWhenKeyguardShowingTq() {
-        if (DEBUG) Log.d(TAG, "onWakeMotionWhenKeyguardShowing()");
+        if (DBG_WAKE) Log.d(TAG, "onWakeMotionWhenKeyguardShowing()");
 
         // give the keyguard view manager a chance to adjust the state of the
         // keyguard based on the key that woke the device before poking
