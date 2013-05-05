@@ -11,12 +11,13 @@ import android.os.Handler;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.view.View;
+import android.util.Log;
 
 import com.android.systemui.R;
 
 public class WirelessAdbToggle extends StatefulToggle {
 
-    private static final String PORT = "5555";
+    private static final int PORT = 5555;
 
     private boolean enabled;
     private int mAdbEnabled;
@@ -62,7 +63,9 @@ public class WirelessAdbToggle extends StatefulToggle {
         mAdbEnabled = Settings.Global.getInt(mContext.getContentResolver(),
                               Settings.Global.ADB_ENABLED, 0);
 
-        if (System.getProperty("service.adb.tcp.port") == PORT) {
+//        if (System.getProperty("service.adb.tcp.port") == PORT) {
+          if (Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.ADB_PORT, 0) == PORT) {
             if (mWifiMgr.isWifiEnabled()) { // Check if port is open then check isWifiEnabled()
                 enabled = true;
             }
@@ -115,10 +118,16 @@ public class WirelessAdbToggle extends StatefulToggle {
         }
 
         public void run() {
+            Log.d("maxwen", "run() state = "+state);
             if (state) {
-                System.setProperty("service.adb.tcp.port", PORT);
+                //System.setProperty("service.adb.tcp.port", PORT);
+                Settings.Secure.putInt(mContext.getContentResolver(),
+                        Settings.Secure.ADB_PORT,  PORT);
+
             } else {
-                System.setProperty("service.adb.tcp.port", "-1");
+                //System.setProperty("service.adb.tcp.port", "-1");
+                Settings.Secure.putInt(mContext.getContentResolver(),
+                        Settings.Secure.ADB_PORT, -1);
             }
 
             try {
