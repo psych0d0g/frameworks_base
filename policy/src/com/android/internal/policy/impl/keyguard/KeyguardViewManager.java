@@ -96,6 +96,7 @@ public class KeyguardViewManager {
         public void onChange(boolean selfChange) {
             setKeyguardParams();
             mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
+            mKeyguardHost.restoreHierarchyState(mStateContainer);
         }
     }
 
