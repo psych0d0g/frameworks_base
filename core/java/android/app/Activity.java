@@ -2429,14 +2429,13 @@ public class Activity extends ContextThemeWrapper
                                 Settings.System.STATUSBAR_SWIPE_TIMEOUT, 5000); 
                             mightBeMyGesture = true;
                         }
-                        
-                        return true;
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     if (mightBeMyGesture)
                     {
-                        if(ev.getY() > tStatus)
+                    	// wait for a minimal move else it can open too early
+                        if(ev.getY() > (tStatus + 5))
                         {
                             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
                             // dont change flags for non fullscreen apps
@@ -2451,11 +2450,11 @@ public class Activity extends ContextThemeWrapper
                                     } 
                                 }               
                             }, swipeTimeout);
+
+                            mightBeMyGesture = false;       
+                            // dont send event further                    
+                            return true;
                         }
-                        
-                        mightBeMyGesture = false;
-                            
-                        return true;
                     }
                     break;
                 default:

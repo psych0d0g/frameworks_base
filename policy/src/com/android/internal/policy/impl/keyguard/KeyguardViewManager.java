@@ -200,7 +200,8 @@ public class KeyguardViewManager {
 
         private boolean mightBeMyGesture = false;
         private float tStatus;
-
+        private int swipeTimeout = 5000;
+    
         public ViewManagerHost(Context context) {
             super(context);
             setFitsSystemWindows(true);
@@ -266,16 +267,18 @@ public class KeyguardViewManager {
                                     Settings.System.STATUSBAR_HIDDEN_NOW, false);
                             
                             if (swipeEnabled && settingStatusbarHidden){
+                                // get user timeout, default at 5 sec.
+                                swipeTimeout = Settings.System.getInt(mContext.getContentResolver(), 
+                                    Settings.System.STATUSBAR_SWIPE_TIMEOUT, 5000); 
                                 mightBeMyGesture = true;
                             }
-                        
-                            return true;
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
                         if (mightBeMyGesture)
                         {
-                            if(event.getY() > tStatus)
+                    	    // wait for a minimal move else it can open too early
+                            if(event.getY() > (tStatus + 5))
                             {
                                 Settings.System.putBoolean(mContext.getContentResolver(), 
                                     Settings.System.STATUSBAR_HIDDEN_NOW, false);
@@ -285,12 +288,13 @@ public class KeyguardViewManager {
                                         Settings.System.putBoolean(mContext.getContentResolver(), 
                                             Settings.System.STATUSBAR_HIDDEN_NOW, true);
                                     }               
-                                }, 5000);
-                            }
+                                }, swipeTimeout);
                             
-                            mightBeMyGesture = false;
-                                
-                            return true;
+                            
+                                mightBeMyGesture = false;
+                                // dont send event further 
+                                return true;
+                            }
                         }
                         break;
                     default:
