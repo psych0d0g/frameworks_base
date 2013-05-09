@@ -74,6 +74,10 @@ public class KeyguardViewManager {
 
     private boolean mScreenOn = false;
     private LockPatternUtils mLockPatternUtils;
+    
+    private boolean mStatusbarHidden = false;
+    private boolean mSwipeStatusbarEnabled = false;
+    private boolean mLoockThroughEnabled = false;
 
     public interface ShowListener {
         void onShown(IBinder windowToken);
@@ -90,13 +94,22 @@ public class KeyguardViewManager {
                     Settings.System.LOCKSCREEN_SEE_THROUGH), false, this);         
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_HIDDEN_NOW), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
+            mStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(), 
+                Settings.System.STATUSBAR_HIDDEN_NOW, false);
+            mSwipeStatusbarEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN, false);
+            mLoockThroughEnabled = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_SEE_THROUGH, 0) != 0;
+
+
             setKeyguardParams();
             mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
-            mKeyguardHost.restoreHierarchyState(mStateContainer);
         }
     }
 
@@ -146,23 +159,18 @@ public class KeyguardViewManager {
 
     public void setKeyguardParams() {
         final boolean isActivity = (mContext instanceof Activity); // for test activity
-        boolean allowSeeThrough = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_SEE_THROUGH, 0) != 0;
-
-        boolean settingStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(), 
-                Settings.System.STATUSBAR_HIDDEN_NOW, false);
 
         int flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
                 | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
 
-        if (!settingStatusbarHidden) {
+        if (!mStatusbarHidden) {
             flags |= WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
         } else {
             flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
         }
         
-        if (!allowSeeThrough) {
+        if (!mLoockThroughEnabled) {
             flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
         }
         if (!mNeedsInput) {
@@ -254,19 +262,20 @@ public class KeyguardViewManager {
         @Override
         public boolean dispatchTouchEvent(MotionEvent event) {
             if (mKeyguardView != null) {
+                // maxwen: WHAT A HACK!!!
+                if (!mStatusbarHidden){
+                    event.setLocation(event.getX(), event.getY()-getStatusBarHeight());
+                }
+                
                 switch (event.getAction())
                 {
                     case MotionEvent.ACTION_DOWN:
+                        //Log.d("maxwen", "x="+event.getX()+" y="+event.getY());
+                        
                         tStatus = event.getY();
                         if (tStatus < getStatusBarHeight())
                         {                        
-                            boolean swipeEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
-                                    Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN, false);
-
-                            boolean settingStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(), 
-                                    Settings.System.STATUSBAR_HIDDEN_NOW, false);
-                            
-                            if (swipeEnabled && settingStatusbarHidden){
+                            if (mSwipeStatusbarEnabled && mStatusbarHidden){
                                 // get user timeout, default at 5 sec.
                                 swipeTimeout = Settings.System.getInt(mContext.getContentResolver(), 
                                     Settings.System.STATUSBAR_SWIPE_TIMEOUT, 5000); 
