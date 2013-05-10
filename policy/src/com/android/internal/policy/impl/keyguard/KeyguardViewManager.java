@@ -32,6 +32,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.SystemProperties;
+import android.os.ServiceManager;
+import android.os.RemoteException;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Slog;
@@ -43,6 +45,7 @@ import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.view.WindowManager;
 import android.view.MotionEvent;
+import android.view.IWindowManager;
 import android.widget.FrameLayout;
 
 import com.android.internal.R;
@@ -78,7 +81,7 @@ public class KeyguardViewManager {
     private boolean mStatusbarHidden = false;
     private boolean mSwipeStatusbarEnabled = false;
     private boolean mLoockThroughEnabled = false;
-
+    
     public interface ShowListener {
         void onShown(IBinder windowToken);
     };
@@ -119,7 +122,7 @@ public class KeyguardViewManager {
         mViewManager = viewManager;
         mViewMediatorCallback = callback;
         mLockPatternUtils = lockPatternUtils;
-
+        
         SettingsObserver observer = new SettingsObserver(new Handler());
         observer.observe();
         updateSettings();
@@ -211,11 +214,12 @@ public class KeyguardViewManager {
 
         private boolean mightBeMyGesture = false;
         private float tStatus;
-        private int swipeTimeout = 5000;
-    
+        private IWindowManager mWm;
+        
         public ViewManagerHost(Context context) {
             super(context);
             setFitsSystemWindows(true);
+            mWm = IWindowManager.Stub.asInterface(ServiceManager.getService("window"));
         }
 
         @Override
@@ -281,9 +285,6 @@ public class KeyguardViewManager {
                         if (tStatus < getStatusBarHeight())
                         {                        
                             if (mSwipeStatusbarEnabled && mStatusbarHidden){
-                                // get user timeout, default at 5 sec.
-                                swipeTimeout = Settings.System.getInt(mContext.getContentResolver(), 
-                                    Settings.System.STATUSBAR_SWIPE_TIMEOUT, 5000); 
                                 mightBeMyGesture = true;
                             }
                         }
@@ -294,16 +295,11 @@ public class KeyguardViewManager {
                     	    // wait for a minimal move else it can open too early
                             if(event.getY() > (tStatus + 5))
                             {
-                                Settings.System.putBoolean(mContext.getContentResolver(), 
-                                    Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, true);
-                                
-                                mKeyguardHost.postDelayed(new Runnable() {
-                                    public void run() {
-                                        Settings.System.putBoolean(mContext.getContentResolver(), 
-                                            Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, false);
-                                    }               
-                                }, swipeTimeout);
-                            
+                                try {
+                                    mWm.startSwipeTimer();
+                                } catch(RemoteException e){
+                                    Log.e(TAG, "startSwipeTimer", e);
+                                }
                             
                                 mightBeMyGesture = false;
                                 // dont send event further 

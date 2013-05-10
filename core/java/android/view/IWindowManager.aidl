@@ -265,4 +265,10 @@ interface IWindowManager
      * credentials.
      */
     void showAssistant();
+    
+    void startSwipeTimer();
+    
+    void stopSwipeTimer();
+    
+    void resumeSwipeTimer();
 }

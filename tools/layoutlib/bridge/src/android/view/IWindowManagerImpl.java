@@ -503,4 +503,14 @@ public class IWindowManagerImpl implements IWindowManager {
             throws RemoteException {
         // TODO Auto-generated method stub
     }
+
+    public void startSwipeTimer(){
+    }
+    
+    public void stopSwipeTimer(){
+    }
+    
+    public void resumeSwipeTimer(){
+    }
+
 }
