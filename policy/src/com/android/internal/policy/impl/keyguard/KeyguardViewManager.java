@@ -100,14 +100,7 @@ public class KeyguardViewManager {
 
         @Override
         public void onChange(boolean selfChange) {
-            mStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(), 
-                Settings.System.STATUSBAR_HIDDEN_NOW, false);
-            mSwipeStatusbarEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
-                Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN, false);
-            mLoockThroughEnabled = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_SEE_THROUGH, 0) != 0;
-
-
+            updateSettings();
             setKeyguardParams();
             mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
         }
@@ -129,8 +122,18 @@ public class KeyguardViewManager {
 
         SettingsObserver observer = new SettingsObserver(new Handler());
         observer.observe();
+        updateSettings();
     }
 
+    private void updateSettings(){
+        mStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(), 
+            Settings.System.STATUSBAR_HIDDEN_NOW, false);
+        mSwipeStatusbarEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
+            Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN, false);
+        mLoockThroughEnabled = Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.LOCKSCREEN_SEE_THROUGH, 0) != 0;
+    }
+    
     /**
      * Show the keyguard.  Will handle creating and attaching to the view manager
      * lazily.
