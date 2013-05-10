@@ -2397,7 +2397,7 @@ public class Activity extends ContextThemeWrapper
 
     boolean mightBeMyGesture = false;
     float tStatus;
-    boolean isFullScreenApp = false;
+    //boolean isFullScreenApp = false;
     int swipeTimeout = 5000;
     
     /**
@@ -2417,11 +2417,11 @@ public class Activity extends ContextThemeWrapper
                     tStatus = ev.getY();
                     if (tStatus < getStatusBarHeight())
                     {
-                        isFullScreenApp = (getWindow().getAttributes().flags & 
-                                WindowManager.LayoutParams.FLAG_FULLSCREEN)==WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                        //isFullScreenApp = (getWindow().getAttributes().flags & 
+                        //        WindowManager.LayoutParams.FLAG_FULLSCREEN)==WindowManager.LayoutParams.FLAG_FULLSCREEN;
                         
                         boolean swipeEnabled = Settings.System.getBoolean(getContentResolver(),
-                                Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN, false);
+                                Settings.System.STATUSBAR_SWIPE_ENABLE, false);
                         
                         if (swipeEnabled){
                             // get user timeout, default at 5 sec.
@@ -2437,7 +2437,20 @@ public class Activity extends ContextThemeWrapper
                     	// wait for a minimal move else it can open too early
                         if(ev.getY() > (tStatus + 5))
                         {
-                            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                            // maxwen: for fullscreen apps this means
+                            // that showing the statusbar is not doing 
+                            // a relayout but just overlapping 
+                            Settings.System.putBoolean(getContentResolver(), 
+                                Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, true);
+                                
+                            mHandler.postDelayed(new Runnable() {
+                                public void run() {
+                                    Settings.System.putBoolean(getContentResolver(), 
+                                        Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, false);
+                                }               
+                            }, swipeTimeout);
+
+                            /*getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
                             // dont change flags for non fullscreen apps
                             if (isFullScreenApp){
                                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -2449,7 +2462,7 @@ public class Activity extends ContextThemeWrapper
                                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                                     } 
                                 }               
-                            }, swipeTimeout);
+                            }, swipeTimeout);*/
 
                             mightBeMyGesture = false;       
                             // dont send event further                    

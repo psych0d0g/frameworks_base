@@ -95,7 +95,7 @@ public class KeyguardViewManager {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUSBAR_HIDDEN_NOW), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN), false, this);
+                    Settings.System.STATUSBAR_SWIPE_ENABLE), false, this);
         }
 
         @Override
@@ -129,7 +129,7 @@ public class KeyguardViewManager {
         mStatusbarHidden = Settings.System.getBoolean(mContext.getContentResolver(), 
             Settings.System.STATUSBAR_HIDDEN_NOW, false);
         mSwipeStatusbarEnabled = Settings.System.getBoolean(mContext.getContentResolver(),
-            Settings.System.STATUSBAR_SWIPE_FOR_FULLSCREEN, false);
+            Settings.System.STATUSBAR_SWIPE_ENABLE, false);
         mLoockThroughEnabled = Settings.System.getInt(mContext.getContentResolver(),
             Settings.System.LOCKSCREEN_SEE_THROUGH, 0) != 0;
     }
@@ -266,6 +266,8 @@ public class KeyguardViewManager {
         public boolean dispatchTouchEvent(MotionEvent event) {
             if (mKeyguardView != null) {
                 // maxwen: WHAT A HACK!!!
+                // TODO if we always would use WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                // this is not needed - but then statusbar is overlapping widgets
                 if (!mStatusbarHidden){
                     event.setLocation(event.getX(), event.getY()-getStatusBarHeight());
                 }
@@ -293,12 +295,12 @@ public class KeyguardViewManager {
                             if(event.getY() > (tStatus + 5))
                             {
                                 Settings.System.putBoolean(mContext.getContentResolver(), 
-                                    Settings.System.STATUSBAR_HIDDEN_NOW, false);
+                                    Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, true);
                                 
                                 mKeyguardHost.postDelayed(new Runnable() {
                                     public void run() {
                                         Settings.System.putBoolean(mContext.getContentResolver(), 
-                                            Settings.System.STATUSBAR_HIDDEN_NOW, true);
+                                            Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, false);
                                     }               
                                 }, swipeTimeout);
                             
