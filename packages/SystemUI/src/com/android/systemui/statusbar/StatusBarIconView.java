@@ -61,7 +61,7 @@ public class StatusBarIconView extends AnimatedImageView {
         super(context);
         final Resources res = context.getResources();
         final float densityMultiplier = res.getDisplayMetrics().density;
-        final float scaledPx = 8 * densityMultiplier;
+        final float scaledPx = 10 * densityMultiplier;
         mSlot = slot;
         mNumberPain = new Paint();
         mNumberPain.setTextAlign(Paint.Align.CENTER);
