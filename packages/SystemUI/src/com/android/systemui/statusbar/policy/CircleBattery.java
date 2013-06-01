@@ -85,8 +85,8 @@ public class CircleBattery extends ImageView {
     private int mCircleAnimSpeed;
     private int mCircleReset;
 
-    private int mStockFontSize;
-    private int mFontSize;
+    private int mStockFontSize = 16;
+    private int mFontSize = 16;
 
     // runnable to invalidate view via mHandler.postDelayed() call
     private final Runnable mInvalidate = new Runnable() {
@@ -234,7 +234,6 @@ public class CircleBattery extends ImageView {
                     Settings.System.STATUSBAR_BATTERY_ICON, 0));
         mObserver = new SettingsObserver(mHandler);
         mBatteryReceiver = new BatteryReceiver(mContext);
-        mStockFontSize = StatusBarHelpers.pixelsToSp(mContext, 16f);
 
         initializeCircleVars();
     }
