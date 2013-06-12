@@ -1994,4 +1994,9 @@
   <java-symbol type="anim" name="recents_fade_out" />
 
   <java-symbol type="bool" name="config_useCMTorch" />
+
+  <!-- Privacy Guard -->
+  <java-symbol type="string" name="privacy_guard_notification" />
+  <java-symbol type="string" name="privacy_guard_notification_detail" />
+  <java-symbol type="drawable" name="stat_notify_privacy_guard" />
 </resources>
