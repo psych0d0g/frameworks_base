@@ -304,7 +304,13 @@ public class SignalClusterView
             mMobile.getLayoutParams().width = width;
             mAirplane.getLayoutParams().width = width;
         }
-        apply();
+        // must be done in the UI thread
+        post(new Runnable() {
+            @Override
+            public void run() {
+                apply();
+            }
+        });
     }
 }
 
