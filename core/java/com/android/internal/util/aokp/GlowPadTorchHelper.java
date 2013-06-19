@@ -50,11 +50,19 @@ public class GlowPadTorchHelper {
     public static boolean startTorch(Context mContext) {
         if (!torchActive(mContext)) {
             vibrate(mContext);
-            Intent intent = new Intent("com.aokp.torch.INTENT_TORCH_ON");
-            intent.setComponent(ComponentName.unflattenFromString
+            
+            boolean useCMTorch = mContext.getResources().getBoolean(
+                com.android.internal.R.bool.config_useCMTorch);
+
+            if(useCMTorch){
+                mContext.sendBroadcast(new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT"));
+            } else {
+                Intent intent = new Intent("com.aokp.torch.INTENT_TORCH_ON");
+                intent.setComponent(ComponentName.unflattenFromString
                     ("com.aokp.Torch/.TorchReceiver"));
-            intent.setAction("com.aokp.torch.INTENT_TORCH_ON");
-            mContext.sendBroadcast(intent);
+                intent.setAction("com.aokp.torch.INTENT_TORCH_ON");
+                mContext.sendBroadcast(intent);
+            }
             return true;
         } else {
             return false;
@@ -65,12 +73,19 @@ public class GlowPadTorchHelper {
         if (logIt) {
             Log.w(TAG, "Second Torch Temination Required");
         }
-        Intent intent = new Intent("com.aokp.torch.INTENT_TORCH_OFF");
-        intent.setComponent(ComponentName.unflattenFromString
-                ("com.aokp.Torch/.TorchReceiver"));
-        intent.setAction("com.aokp.torch.INTENT_TORCH_OFF");
-        intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
-        mContext.sendBroadcast(intent);
+        boolean useCMTorch = mContext.getResources().getBoolean(
+            com.android.internal.R.bool.config_useCMTorch);
+
+        if(useCMTorch){
+            mContext.sendBroadcast(new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT"));
+        } else {
+            Intent intent = new Intent("com.aokp.torch.INTENT_TORCH_OFF");
+            intent.setComponent(ComponentName.unflattenFromString
+                    ("com.aokp.Torch/.TorchReceiver"));
+            intent.setAction("com.aokp.torch.INTENT_TORCH_OFF");
+            intent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+            mContext.sendBroadcast(intent);
+        }
     }
 
     public static void vibrate(Context mContext) {
