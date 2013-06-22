@@ -795,8 +795,8 @@ final class DisplayPowerController {
         if(mPowerRequest.useAutoBrightness && mButtonAutoBrightness==0){
         	buttonlight_on = false;
         }
-        mButtonlight.setBrightness(buttonlight_on ? 1 : 0);
-
+        mButtonlight.setBrightness(buttonlight_on ? mButtonAutoBrightness : 0);
+        
         // Report whether the display is ready for use.
         // We mostly care about the screen state here, ignoring brightness changes
         // which will be handled asynchronously.
