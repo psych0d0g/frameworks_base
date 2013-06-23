@@ -1047,7 +1047,7 @@ public class KeyguardViewMediator {
      * @param keyCode The keycode of the key that woke the device
      */
     public void onWakeKeyWhenKeyguardShowingTq(int keyCode) {
-        if (DBG_WAKE) Log.d(TAG, "onWakeKeyWhenKeyguardShowing(" + keyCode + ")");
+        if (DEBUG) Log.d(TAG, "onWakeKeyWhenKeyguardShowing(" + keyCode + ")");
 
         // give the keyguard view manager a chance to adjust the state of the
         // keyguard based on the key that woke the device before poking
@@ -1066,7 +1066,7 @@ public class KeyguardViewMediator {
      * action should be posted to a handler.
      */
     public void onWakeMotionWhenKeyguardShowingTq() {
-        if (DBG_WAKE) Log.d(TAG, "onWakeMotionWhenKeyguardShowing()");
+        if (DEBUG) Log.d(TAG, "onWakeMotionWhenKeyguardShowing()");
 
         // give the keyguard view manager a chance to adjust the state of the
         // keyguard based on the key that woke the device before poking
