@@ -58,8 +58,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"/>
-
-    		<!--<include layout="@layout/keyguard_multi_user_selector" />-->
         </FrameLayout>
 
         <View android:layout_width="match_parent"
