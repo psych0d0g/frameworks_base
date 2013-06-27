@@ -931,7 +931,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     };
 
-    Runnable mBackLongPress = new Runnable() {
+    Runnable mKillAppHandler = new Runnable() {
         public void run() {
             final Intent intent = new Intent(Intent.ACTION_MAIN);
             final ActivityManager am = (ActivityManager)mContext
@@ -1050,7 +1050,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH);
                     break;
                 case KEY_ACTION_KILL_APP:
-                    mHandler.postDelayed(mBackLongPress, mBackKillTimeout - 500);
+                    mHandler.postDelayed(mKillAppHandler, mBackKillTimeout);
                     break;
                 case KEY_ACTION_LAST_APP:
                     toggleLastApp();
