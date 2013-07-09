@@ -25,15 +25,10 @@ import android.provider.Settings;
  */
 
 public class StatusbarToggleShortcut extends Activity  {
-  public StatusbarToggleShortcut() {
-    super();
-  }
 
-  /** Called when the activity is first created. */
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-  }
+    public StatusbarToggleShortcut() {
+        super();
+    }
 
   @Override
   public void onResume()  {
@@ -47,4 +42,10 @@ public class StatusbarToggleShortcut extends Activity  {
         Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, false);
     this.finish();
   }
+  
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 }

@@ -25,15 +25,10 @@ import android.provider.Settings;
  */
 
 public class NavbarToggle extends Activity  {
-  public NavbarToggle() {
-    super();
-  }
 
-  /** Called when the activity is first created. */
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-  }
+    public NavbarToggle() {
+        super();
+    }
 
   @Override
   public void onResume() {
@@ -44,4 +39,10 @@ public class NavbarToggle extends Activity  {
       Settings.System.NAVIGATION_BAR_SHOW_NOW,(!NavOn));
     this.finish();
   }
+
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 }
