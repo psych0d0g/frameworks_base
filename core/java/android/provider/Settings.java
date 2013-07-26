@@ -1857,6 +1857,20 @@ public final class Settings {
         public static final String LIGHT_SENSOR_BUTTON_VALUES = "light_sensor_button_values";
 
         /**
+         * Custom button brightness value for manual mode
+         *
+         * @hide
+         */
+        public static final String BUTTON_BRIGHTNESS = "button_brightness";
+        
+        /**
+         * use same value for buttons as for screen in manual mode
+         *
+         * @hide
+         */
+        public static final String BUTTON_USE_SCREEN_BRIGHTNESS = "button_use_screen_brightness";
+                
+        /**
          * Control whether the process CPU usage meter should be shown.
          *
          * @deprecated Use {@link Global#SHOW_PROCESSES} instead

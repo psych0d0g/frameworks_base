@@ -25,9 +25,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.ContentQueryMap;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.hardware.Sensor;
@@ -40,6 +38,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.text.format.DateUtils;
 import android.util.FloatMath;
 import android.util.Slog;
@@ -344,6 +343,14 @@ final class DisplayPowerController {
     // Use -1 if there is no current auto-brightness value available.
     private int mScreenAutoBrightness = -1;
     private int mButtonAutoBrightness = -1;
+    
+    // value to use in manual mode
+    // can also be 0 if button light should be disabled
+    // if -1 screen brightness will be used
+    private int mCustomButtonBrightness = -1;
+    
+    // link button brighntess with screen brightness in manual modes
+    private boolean mButtonUseScreenBrightness = true;
         
     // The last screen auto-brightness gamma.  (For printing in dump() only.)
     private float mLastScreenAutoBrightnessGamma = 1.0f;
@@ -368,14 +375,11 @@ final class DisplayPowerController {
     private int mScreenBrightnessMinimum;
     
     private Context mContext;
-    private ContentQueryMap mSettings;
     private boolean mDebugLightSensor=DEBUG;
     private boolean mCustomLightEnabled;
     private int[] mCustomButtonBrightnessValues;
     private int[] mCustomScreenBrightnessValues;
     private int[] mCustomLightLevels;
-    // Custom light housekeeping
-    private long mLightSettingsTag = -1;
     private boolean mInitDone;
 
 
@@ -402,15 +406,22 @@ final class DisplayPowerController {
         mDisplayManager = displayManager;
 
         final Resources resources = mContext.getResources();
-                
-        ContentResolver resolver = mContext.getContentResolver();
-        Cursor settingsCursor = resolver.query(Settings.System.CONTENT_URI, null,
-                "(" + Settings.System.NAME + "=?)",
-                new String[]{Settings.System.LIGHTS_CHANGED}, null);
-                
-        mSettings = new ContentQueryMap(settingsCursor, Settings.System.NAME, true, mHandler);
-        SettingsObserver settingsObserver = new SettingsObserver();
-        mSettings.addObserver(settingsObserver);
+ 
+        final ContentObserver settingsObserver = new ContentObserver(new Handler()){
+            @Override
+            public void onChange(boolean selfChange) {
+                updateLightSettings();
+            }
+        };
+        mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.LIGHTS_CHANGED),
+                    false, settingsObserver, UserHandle.USER_ALL);
+        mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.BUTTON_BRIGHTNESS),
+                    false, settingsObserver, UserHandle.USER_ALL);
+        mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.BUTTON_USE_SCREEN_BRIGHTNESS),
+                    false, settingsObserver, UserHandle.USER_ALL);
         
         mScreenBrightnessDimConfig = clampAbsoluteBrightness(resources.getInteger(
                 com.android.internal.R.integer.config_screenBrightnessDim));
@@ -783,15 +794,35 @@ final class DisplayPowerController {
 
         /* button light */
         boolean buttonlight_on = wantScreenOn(mPowerRequest.screenState) && (mPowerRequest.screenState != DisplayPowerRequest.SCREEN_STATE_DIM); 
-       
-        if(mDebugLightSensor){
-            Slog.d("TAG", "mButtonAutoBrightness="+mButtonAutoBrightness);
+
+        int buttonBrighness = -1;       
+
+        if(mPowerRequest.useAutoBrightness){
+            if (mButtonAutoBrightness == -1){
+                // falback to use same value as screen
+                buttonBrighness = mScreenAutoBrightness;
+            } else {
+                buttonBrighness = mButtonAutoBrightness;
+            }
+        } else {
+             if (mCustomButtonBrightness == -1 || mButtonUseScreenBrightness){
+                // use same value as screen
+                buttonBrighness = Settings.System.getInt(mContext.getContentResolver(), 
+                    Settings.System.SCREEN_BRIGHTNESS, 60);
+            } else {
+                buttonBrighness = mCustomButtonBrightness;
+            }
         }
 
-        if(mPowerRequest.useAutoBrightness && mButtonAutoBrightness==0){
-        	buttonlight_on = false;
+        if (buttonBrighness == 0){
+            buttonlight_on = false;
         }
-        mButtonlight.setBrightness(buttonlight_on ? mButtonAutoBrightness : 0);
+
+        if(mDebugLightSensor){
+            Slog.d(TAG, "buttonBrighness="+buttonBrighness + " buttonlight_on=" + buttonlight_on);
+        }
+        
+        mButtonlight.setBrightness(buttonlight_on ? buttonBrighness : 0);
         
         // Report whether the display is ready for use.
         // We mostly care about the screen state here, ignoring brightness changes
@@ -1460,19 +1491,16 @@ final class DisplayPowerController {
     private void updateLightSettings() {
         ContentResolver cr = mContext.getContentResolver();
 
-        long tag = Settings.System.getLong(cr,
-                Settings.System.LIGHTS_CHANGED, 0);
-        if (tag == mLightSettingsTag) {
-           return;
+        if (mDebugLightSensor) {
+            Slog.d(TAG, "updateLightSettings");
         }
-        mLightSettingsTag = tag;
 
+        mCustomButtonBrightness = Settings.System.getInt(cr, 
+                Settings.System.BUTTON_BRIGHTNESS, -1);
+        mButtonUseScreenBrightness = Settings.System.getBoolean(cr, 
+                Settings.System.BUTTON_USE_SCREEN_BRIGHTNESS, true);
         mCustomLightEnabled = Settings.System.getInt(cr,
                 Settings.System.LIGHT_SENSOR_CUSTOM, 0) != 0;
-
-        if (mDebugLightSensor) {
-            Slog.d(TAG, "custom: " + mCustomLightEnabled);
-         }
 
         if (mCustomLightEnabled) {
             // Load custom values
@@ -1511,7 +1539,7 @@ final class DisplayPowerController {
                         || mCustomButtonBrightnessValues.length != (N + 1)) {
                     throw new Exception("sanity check failed");
                 }
-                
+                                    
                 if(mInitDone && mUseSoftwareAutoBrightnessConfig){ 
                     createLightLevelConfig();
                     updateAutoBrightness(true);
@@ -1523,6 +1551,7 @@ final class DisplayPowerController {
                 Slog.e(TAG, "loading custom settings failed", e);
             }
         }
+        sendUpdatePowerState();
     }
     
     private void createLightLevelConfig(){
@@ -1549,12 +1578,6 @@ final class DisplayPowerController {
             if (screenBrightnessValues[0] < mScreenBrightnessMinimum) {
                 mScreenBrightnessMinimum = screenBrightnessValues[0];
             }
-        }
-    }
-    
-    private class SettingsObserver implements Observer {
-        public void update(Observable o, Object arg) {
-            updateLightSettings();
         }
     }
     
