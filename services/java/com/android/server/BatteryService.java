@@ -38,6 +38,8 @@ import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.EventLog;
 import android.util.Slog;
+import android.database.ContentObserver;
+import android.content.ContentResolver;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -144,6 +146,8 @@ public final class BatteryService extends Binder {
     private boolean mSentLowBatteryBroadcast = false;
 
     private native void native_update();
+    
+    private boolean mDisableChargingLed = false;
 
     public BatteryService(Context context, LightsService lights) {
         mContext = context;
@@ -167,6 +171,19 @@ public final class BatteryService extends Binder {
             mInvalidChargerObserver.startObserving(
                     "DEVPATH=/devices/virtual/switch/invalid_charger");
         }
+
+        final ContentObserver settingsObserver = new ContentObserver(new Handler()){
+            @Override
+            public void onChange(boolean selfChange) {
+                updateChargingSettings();
+            }
+        };
+        mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.DISABLE_CHARGING_LED),
+                    false, settingsObserver, UserHandle.USER_ALL);
+
+        mDisableChargingLed = Settings.System.getBoolean(mContext.getContentResolver(), 
+                Settings.System.DISABLE_CHARGING_LED, false);
 
         // set initial status
         synchronized (mLock) {
@@ -705,7 +722,10 @@ public final class BatteryService extends Binder {
         public void updateLightsLocked() {
             final int level = mBatteryLevel;
             final int status = mBatteryStatus;
-            if (level < mLowBatteryWarningLevel) {
+            
+            if (mDisableChargingLed){
+                mBatteryLight.turnOff();
+            } else if (level < mLowBatteryWarningLevel) {
                 if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
                     // Solid red when battery is charging
                     mBatteryLight.setColor(mBatteryLowARGB);
@@ -729,6 +749,14 @@ public final class BatteryService extends Binder {
                 // No lights if not charging and not low
                 mBatteryLight.turnOff();
             }
+        }
+    }
+    
+    private void updateChargingSettings() {
+        mDisableChargingLed = Settings.System.getBoolean(mContext.getContentResolver(), 
+                Settings.System.DISABLE_CHARGING_LED, false);
+        synchronized (mLock) {
+            mLed.updateLightsLocked();
         }
     }
 }

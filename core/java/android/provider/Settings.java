@@ -1870,6 +1870,14 @@ public final class Settings {
          */
         public static final String BUTTON_USE_SCREEN_BRIGHTNESS = "button_use_screen_brightness";
                 
+        
+        /**
+         * should any charging led be disabled
+         *
+         * @hide
+         */
+        public static final String DISABLE_CHARGING_LED = "disable_charging_led";
+        
         /**
          * Control whether the process CPU usage meter should be shown.
          *
