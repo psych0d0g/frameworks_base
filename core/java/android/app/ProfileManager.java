@@ -199,12 +199,11 @@ public class ProfileManager {
             } catch (RemoteException e) {
                 Log.e(TAG, e.getLocalizedMessage(), e);
             }
-            return null;
 
-        } else {
-            // Profiles are not enabled, return the empty profile
-            return mEmptyProfile;
         }
+        // in all error cases return the empty profile
+        // to not break clients not checking for null
+        return mEmptyProfile;
 
     }
 
