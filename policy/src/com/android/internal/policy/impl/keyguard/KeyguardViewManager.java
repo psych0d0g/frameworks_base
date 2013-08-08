@@ -215,6 +215,7 @@ public class KeyguardViewManager {
         private boolean mightBeMyGesture = false;
         private float tStatus;
         private IWindowManager mWm;
+        private int mStatusbarHeight = -1;
         
         public ViewManagerHost(Context context) {
             super(context);
@@ -320,7 +321,11 @@ public class KeyguardViewManager {
         }
                 
         private int getStatusBarHeight() {
-            return mContext.getResources().getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
+            if (mStatusbarHeight == -1){
+                // no need to get the "resize" statusbar height here
+                mStatusbarHeight = mContext.getResources().getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
+            }
+            return mStatusbarHeight;
         }
     }
 

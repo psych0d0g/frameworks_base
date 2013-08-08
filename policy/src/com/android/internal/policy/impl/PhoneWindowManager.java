@@ -157,6 +157,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
+import com.android.internal.util.aokp.StatusBarHelpers;
 
 import java.io.File;
 import java.io.FileReader;
@@ -1327,19 +1328,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
 
-        mFontSize = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUSBAR_FONT_SIZE, -1);
-        if (mFontSize == -1) { // No custom Font Size - so obey @dimen
-            mStatusBarHeight = mContext.getResources().getDimensionPixelSize(
-                com.android.internal.R.dimen.status_bar_height);
-        } else { // Custom Font size, so let's adjust Statusbar Height
-            float fontSizepx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mFontSize,
-                    mContext.getResources().getDisplayMetrics());
-            int padding = mContext.getResources().getDimensionPixelSize(
-                    com.android.internal.R.dimen.status_bar_padding);
-            mStatusBarHeight = (int) (fontSizepx + padding);
-            // This gives the StatusBar room for the Font, plus a little padding.
-        }
+        mStatusBarHeight = (int)StatusBarHelpers.getStatusbarHeight(mContext, mFontSize);
 
         // Height of the navigation bar when presented horizontally at bottom
         mNavigationBarHeightForRotation[mPortraitRotation] =

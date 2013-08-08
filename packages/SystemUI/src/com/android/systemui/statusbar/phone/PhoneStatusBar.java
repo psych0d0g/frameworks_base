@@ -179,11 +179,10 @@ public class PhoneStatusBar extends BaseStatusBar {
     LocationController mLocationController;
     NetworkController mNetworkController;
 
-    int mNaturalBarHeight = -1;
-    int mIconSize = -1;
-    int mIconHPadding = -1;
-    int mStockFontSize = 16;
-    int mFontSize = 16;
+    int mNaturalBarHeight;
+    int mIconSize;
+    int mIconHPadding;
+    int mFontSize;
     Display mDisplay;
     Point mCurrentDisplaySize = new Point();
 
@@ -487,7 +486,6 @@ public class PhoneStatusBar extends BaseStatusBar {
         mStatusBarContents = (LinearLayout)mStatusBarView.findViewById(R.id.status_bar_contents);
         mCenterClockLayout = (LinearLayout)mStatusBarView.findViewById(R.id.center_clock_layout);
         mCenterDateLayout = (LinearLayout)mStatusBarView.findViewById(R.id.center_date_layout);
-        mStockFontSize = StatusBarHelpers.pixelsToSp(mContext,((TextView) mStatusBarView.findViewById(R.id.clock)).getTextSize());
         mTickerView = mStatusBarView.findViewById(R.id.ticker);
 
         mPile = (NotificationRowLayout)mStatusBarWindow.findViewById(R.id.latestItems);
@@ -854,11 +852,6 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     public int getStatusBarHeight() {
-        if (mNaturalBarHeight < 0) {
-            final Resources res = mContext.getResources();
-            mNaturalBarHeight =
-                    res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
-        }
         return mNaturalBarHeight;
     }
 
@@ -2789,25 +2782,12 @@ public class PhoneStatusBar extends BaseStatusBar {
         final Resources res = mContext.getResources();
 
         mFontSize = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUSBAR_FONT_SIZE, mStockFontSize);
+                Settings.System.STATUSBAR_FONT_SIZE, -1);
+        mNaturalBarHeight = (int)StatusBarHelpers.getStatusbarHeight(mContext, mFontSize);
 
-        int newIconHPadding = res.getDimensionPixelSize(
+        mIconSize = StatusBarHelpers.getIconWidth(mContext, mFontSize);
+        mIconHPadding = res.getDimensionPixelSize(
                 R.dimen.status_bar_icon_padding);
-        int padding = mContext.getResources().getDimensionPixelSize(
-                com.android.internal.R.dimen.status_bar_padding);
-        float fontSizepx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mFontSize,
-                mContext.getResources().getDisplayMetrics());
-
-        mNaturalBarHeight = (int) (fontSizepx + padding);
-        // Set the Bar height to the size of the font plus padding.
-
-        int newIconSize = StatusBarHelpers.getIconWidth(mContext, mFontSize);
-
-
-        if (newIconHPadding != mIconHPadding || newIconSize != mIconSize) {
-            mIconHPadding = newIconHPadding;
-            mIconSize = newIconSize;
-        }
 
         mEdgeBorder = res.getDimensionPixelSize(R.dimen.status_bar_edge_ignore);
 
@@ -2990,6 +2970,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.NOTIF_ALPHA), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIF_WALLPAPER_ALPHA), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUSBAR_FONT_SIZE), false, this);
 
         }
 
@@ -3039,6 +3021,11 @@ public class PhoneStatusBar extends BaseStatusBar {
         
         mEnableAutoShowStatusbar = Settings.System.getBoolean(cr,
                     Settings.System.STATUSBAR_AUTO_EXPAND_HIDDEN, false);
+        
+        mFontSize = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_FONT_SIZE, -1);
+
+        mNaturalBarHeight = (int)StatusBarHelpers.getStatusbarHeight(mContext, mFontSize);
     }
 
     public boolean skipToSettingsPanel() {

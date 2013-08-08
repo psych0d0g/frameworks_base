@@ -33,6 +33,7 @@ import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.tablet.StatusBarPanel;
 import com.android.systemui.statusbar.WidgetView;
 import com.android.systemui.aokp.AppWindow;
+import com.android.internal.util.aokp.StatusBarHelpers;
 
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
@@ -596,8 +597,9 @@ public abstract class BaseStatusBar extends SystemUI implements
                     float descriptionTextHeight = p.getFontMetricsInt().bottom
                             - p.getFontMetricsInt().top;
 
-                    float statusBarHeight = res
-                            .getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
+                    int fontSize = Settings.System.getInt(mContext.getContentResolver(),
+                            Settings.System.STATUSBAR_FONT_SIZE, -1);
+                    float statusBarHeight = StatusBarHelpers.getStatusbarHeight(mContext, fontSize);
                     float recentsItemTopPadding = statusBarHeight;
 
                     float height = thumbTopMargin

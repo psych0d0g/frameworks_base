@@ -2466,6 +2466,7 @@ public class Activity extends ContextThemeWrapper
 
     public int gemStatusbarSwipePosBarHeight() {
         if (mStatusbarHeight == -1){
+            // no need to get the "resize" statusbar height here
             mStatusbarHeight = getResources().getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
         }
         return mStatusbarHeight;

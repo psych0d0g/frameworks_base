@@ -20,6 +20,7 @@ import com.android.internal.R;
 
 import android.content.Context;
 import android.util.TypedValue;
+import android.util.Log;
 
 public class StatusBarHelpers {
 
@@ -39,11 +40,35 @@ public class StatusBarHelpers {
                 com.android.internal.R.dimen.status_bar_icon_bottom_padding);
         int padding = c.getResources().getDimensionPixelSize(
                 com.android.internal.R.dimen.status_bar_padding);
-        float fontSizepx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, fontsize,
-                c.getResources().getDisplayMetrics());
+
+        float scale = c.getResources().getDisplayMetrics().density;
+        // Convert the dps to pixels, based on density scale
+        float fontSizepx = (int) (fontsize * scale + 0.5f);
         int naturalBarHeight = (int) (fontSizepx + padding);
 
         int newIconSize = naturalBarHeight - (toppadding + bottompadding);
         return newIconSize;
     }
+    
+    public static float getStatusbarHeight(Context c, int fontsize) {
+        float statusBarHeight;
+        if (fontsize == -1) { // No custom Font Size - so obey @dimen
+            statusBarHeight = c.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.status_bar_height);
+        } else { // Custom Font size, so let's adjust Statusbar Height
+            float scale = c.getResources().getDisplayMetrics().density;
+            // Convert the dps to pixels, based on density scale
+            float fontSizepx = (fontsize * scale + 0.5f);
+
+            int padding = c.getResources().getDimensionPixelSize(
+                    com.android.internal.R.dimen.status_bar_padding);
+            statusBarHeight = fontSizepx + padding;
+            // This gives the StatusBar room for the Font, plus a little padding.
+            
+            //Log.d("maxwen", "statusBarHeight="+statusBarHeight+ " fontsize="+fontsize + " fontSizepx="+fontSizepx + " padding="+padding);
+        }
+
+        return statusBarHeight;
+    }
+    
 }

@@ -63,6 +63,7 @@ import com.android.internal.util.aokp.AokpRibbonHelper;
 import com.android.internal.util.aokp.AwesomeAnimationHelper;
 import com.android.internal.util.aokp.BackgroundAlphaColorDrawable;
 import com.android.internal.util.aokp.NavBarHelpers;
+import com.android.internal.util.aokp.StatusBarHelpers;
 import com.android.systemui.aokp.RibbonGestureCatcherView;
 
 public class AppWindow extends LinearLayout {
@@ -168,8 +169,9 @@ public class AppWindow extends LinearLayout {
         mContainerFrame = new FrameLayout(mContext);
         mContainerFrame.removeAllViews();
         if (mNavBarShowing) {
-            int adjustment = mContext.getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.status_bar_height);
+            int fontSize = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_FONT_SIZE, -1);
+            int adjustment = (int)StatusBarHelpers.getStatusbarHeight(mContext, fontSize);
             mPopupView.setPadding(0, adjustment, 0, 0);
         }
         mBackGround = new Button(mContext);
