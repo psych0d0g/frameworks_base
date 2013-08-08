@@ -34,8 +34,7 @@
             android:id="@+id/battery"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
-            android:scaleType="fitCenter"
-            android:layout_gravity="fill_vertical|right"
+            android:layout_gravity="right"
             android:paddingTop="@dimen/status_bar_icon_top_padding"
             android:paddingBottom="@dimen/status_bar_icon_bottom_padding" />
 	
@@ -45,8 +44,7 @@
             android:layout_height="match_parent"
             android:textAppearance="@style/TextAppearance.StatusBar.Battery"
             android:singleLine="true"
-            android:scaleType="fitCenter"
-            android:layout_gravity="fill_vertical|right"
+            android:layout_gravity="right"
             android:paddingTop="@dimen/status_bar_icon_top_padding"
             android:paddingBottom="@dimen/status_bar_icon_bottom_padding" />
         
