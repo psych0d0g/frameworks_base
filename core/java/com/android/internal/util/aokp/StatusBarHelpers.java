@@ -53,7 +53,7 @@ public class StatusBarHelpers {
         }
         
         int newIconSize = naturalBarHeight - (toppadding + bottompadding);
-        Log.d("maxwen", "newIconSize="+newIconSize);
+        //Log.d("maxwen", "newIconSize="+newIconSize);
 
         return newIconSize;
     }
