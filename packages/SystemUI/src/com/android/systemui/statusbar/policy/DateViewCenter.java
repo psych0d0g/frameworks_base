@@ -40,7 +40,6 @@ public class DateViewCenter extends TextView {
     private SettingsObserver mSettingsObserver;
     private boolean mAttached;
     private int mClockColor;
-    private int mStockFontSize;
     private int mFontSize;
     private boolean mShowDate;
     protected int mClockStyle = Clock.STYLE_CLOCK_RIGHT;
@@ -73,7 +72,6 @@ public class DateViewCenter extends TextView {
         	mAttached = true;
 
             mClockColor = getTextColors().getDefaultColor();
-            mStockFontSize = StatusBarHelpers.pixelsToSp(mContext,getTextSize());
 
             // Register for Intent broadcasts for the clock and battery
             IntentFilter filter = new IntentFilter();
@@ -132,7 +130,7 @@ public class DateViewCenter extends TextView {
         int newColor = 0;
 
         mFontSize = Settings.System.getInt(resolver,
-                Settings.System.STATUSBAR_FONT_SIZE, mStockFontSize);
+                Settings.System.STATUSBAR_FONT_SIZE, 16);
         newColor = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_CLOCK_COLOR, mClockColor);
 		mShowDate = Settings.System.getBoolean(resolver,

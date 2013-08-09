@@ -189,7 +189,7 @@ public abstract class Ticker {
         int stockFontSize = StatusBarHelpers.pixelsToSp(mContext,
                 text.getTextSize());
         int fontSize = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUSBAR_FONT_SIZE,0);
+                Settings.System.STATUSBAR_FONT_SIZE, 16);
         // If custom fonSize is set, then need to reduce by 2 to keep stock look/feel
         // if no custom size is set, then stay with what was set by layout/style.
         fontSize = (fontSize == 0 ? stockFontSize : fontSize -2);

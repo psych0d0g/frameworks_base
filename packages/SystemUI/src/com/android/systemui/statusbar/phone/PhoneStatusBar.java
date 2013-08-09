@@ -2782,7 +2782,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         final Resources res = mContext.getResources();
 
         mFontSize = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUSBAR_FONT_SIZE, -1);
+                Settings.System.STATUSBAR_FONT_SIZE, 16);
         mNaturalBarHeight = (int)StatusBarHelpers.getStatusbarHeight(mContext, mFontSize);
 
         mIconSize = StatusBarHelpers.getIconWidth(mContext, mFontSize);
@@ -3023,9 +3023,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.STATUSBAR_AUTO_EXPAND_HIDDEN, false);
         
         mFontSize = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.STATUSBAR_FONT_SIZE, -1);
+                    Settings.System.STATUSBAR_FONT_SIZE, 16);
 
         mNaturalBarHeight = (int)StatusBarHelpers.getStatusbarHeight(mContext, mFontSize);
+        mIconSize = StatusBarHelpers.getIconWidth(mContext, mFontSize);
     }
 
     public boolean skipToSettingsPanel() {

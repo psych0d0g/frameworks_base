@@ -170,7 +170,7 @@ public class AppWindow extends LinearLayout {
         mContainerFrame.removeAllViews();
         if (mNavBarShowing) {
             int fontSize = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.STATUSBAR_FONT_SIZE, -1);
+                    Settings.System.STATUSBAR_FONT_SIZE, 16);
             int adjustment = (int)StatusBarHelpers.getStatusbarHeight(mContext, fontSize);
             mPopupView.setPadding(0, adjustment, 0, 0);
         }

@@ -598,7 +598,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                             - p.getFontMetricsInt().top;
 
                     int fontSize = Settings.System.getInt(mContext.getContentResolver(),
-                            Settings.System.STATUSBAR_FONT_SIZE, -1);
+                            Settings.System.STATUSBAR_FONT_SIZE, 16);
                     float statusBarHeight = StatusBarHelpers.getStatusbarHeight(mContext, fontSize);
                     float recentsItemTopPadding = statusBarHeight;
 

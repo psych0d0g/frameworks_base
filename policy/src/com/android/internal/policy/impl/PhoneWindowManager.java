@@ -1663,7 +1663,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         Settings.System.STATUSBAR_HIDDEN_NOW, false);
 
         int fontSize = Settings.System.getInt(resolver,
-                Settings.System.STATUSBAR_FONT_SIZE, -1);
+                Settings.System.STATUSBAR_FONT_SIZE, 16);
         if (fontSize != mFontSize) {
             mFontSize = fontSize;
             resetScreenHelper();

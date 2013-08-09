@@ -60,7 +60,6 @@ public class SignalClusterView
 
     private boolean showingSignalText = false;
     private boolean showingWiFiText = false;
-    private int mStockFontSize;
     private int mFontSize;
 
     private boolean showingAltCluster = false;
@@ -112,7 +111,6 @@ public class SignalClusterView
 
         mHandler = new Handler();
 
-        mStockFontSize = StatusBarHelpers.pixelsToSp(mContext,mMobileText.getTextSize());
         mSettingsObserver.observe();
 
         apply();
@@ -287,7 +285,7 @@ public class SignalClusterView
         ContentResolver resolver = mContext.getContentResolver();
 
         int fontSize = Settings.System.getInt(resolver,
-                Settings.System.STATUSBAR_FONT_SIZE,mStockFontSize);
+                Settings.System.STATUSBAR_FONT_SIZE,16);
         showingSignalText = (Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_SIGNAL_TEXT,STYLE_HIDE) > 0);
         showingWiFiText = Settings.System.getInt(resolver,

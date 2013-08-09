@@ -85,7 +85,6 @@ public class CircleBattery extends ImageView {
     private int mCircleAnimSpeed;
     private int mCircleReset;
 
-    private int mStockFontSize = 16;
     private int mFontSize = 16;
 
     // runnable to invalidate view via mHandler.postDelayed() call
@@ -326,7 +325,7 @@ public class CircleBattery extends ImageView {
         // stroke width is later set in initSizeBasedStuff()
 
         mFontSize = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUSBAR_FONT_SIZE, mStockFontSize);
+                Settings.System.STATUSBAR_FONT_SIZE, 16);
 
         Resources res = getResources();
 

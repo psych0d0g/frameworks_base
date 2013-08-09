@@ -68,14 +68,9 @@ public class StatusBarIconView extends AnimatedImageView {
         mNumberPaint.setAntiAlias(true);
         mNumberPaint.setTypeface(Typeface.DEFAULT_BOLD);
         float textSize = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUSBAR_FONT_SIZE, 0);
-        if (textSize == 0) {
-            final float densityMultiplier = res.getDisplayMetrics().density;
-            textSize = 10 * densityMultiplier;
-        } else {
-            if (textSize < 20){
-                textSize = 20;
-            }
+                Settings.System.STATUSBAR_FONT_SIZE, 16);
+        if (textSize < 20){
+            textSize = 20;
         }
         mNumberPaint.setTextSize(textSize);
         mNotification = notification;

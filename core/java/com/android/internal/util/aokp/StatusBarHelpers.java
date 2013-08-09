@@ -41,12 +41,20 @@ public class StatusBarHelpers {
         int padding = c.getResources().getDimensionPixelSize(
                 com.android.internal.R.dimen.status_bar_padding);
 
-        float scale = c.getResources().getDisplayMetrics().density;
-        // Convert the dps to pixels, based on density scale
-        float fontSizepx = (int) (fontsize * scale + 0.5f);
-        int naturalBarHeight = (int) (fontSizepx + padding);
-
+        int naturalBarHeight;
+        if (fontsize == -1) { // No custom Font Size - so obey @dimen
+            naturalBarHeight = c.getResources().getDimensionPixelSize(
+                com.android.internal.R.dimen.status_bar_height);
+        } else {
+            float scale = c.getResources().getDisplayMetrics().density;
+            // Convert the dps to pixels, based on density scale
+            float fontSizepx = (int) (fontsize * scale + 0.5f);
+            naturalBarHeight = (int) (fontSizepx + padding);
+        }
+        
         int newIconSize = naturalBarHeight - (toppadding + bottompadding);
+        Log.d("maxwen", "newIconSize="+newIconSize);
+
         return newIconSize;
     }
     
