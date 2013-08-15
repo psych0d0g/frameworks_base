@@ -106,6 +106,8 @@ import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
 import com.android.systemui.statusbar.policy.Prefs;
+import com.android.systemui.statusbar.policy.ClockCenter;
+import com.android.systemui.statusbar.policy.DateViewCenter;
 import com.android.systemui.statusbar.toggles.ToggleManager;
 import com.android.systemui.aokp.AwesomeAction;
 import com.android.internal.util.aokp.StatusBarHelpers;
@@ -213,6 +215,10 @@ public class PhoneStatusBar extends BaseStatusBar {
     View mMoreIcon;
     // layout for center date
     LinearLayout mCenterDateLayout;
+    
+    ClockCenter mClockCenter;
+    DateViewCenter mDateViewCenter;
+    
 
     // expanded notifications
     NotificationPanelView mNotificationPanel; // the sliding/resizing panel within the notification window
@@ -480,12 +486,17 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         mSystemIconArea = (LinearLayout) mStatusBarView.findViewById(R.id.system_icon_area);
         mStatusIcons = (LinearLayout)mStatusBarView.findViewById(R.id.statusIcons);
+        mStatusBarContents = (LinearLayout)mStatusBarView.findViewById(R.id.status_bar_contents);
+        mCenterClockLayout = (LinearLayout)mStatusBarView.findViewById(R.id.center_clock_layout);
+        mClockCenter = (ClockCenter)mStatusBarView.findViewById(R.id.center_clock);
+        mCenterDateLayout = (LinearLayout)mStatusBarView.findViewById(R.id.center_date_layout);
+        mDateViewCenter = (DateViewCenter)mStatusBarView.findViewById(R.id.center_date);
         mNotificationIcons = (IconMerger)mStatusBarView.findViewById(R.id.notificationIcons);
         mMoreIcon = mStatusBarView.findViewById(R.id.moreIcon);
         mNotificationIcons.setOverflowIndicator(mMoreIcon);
-        mStatusBarContents = (LinearLayout)mStatusBarView.findViewById(R.id.status_bar_contents);
-        mCenterClockLayout = (LinearLayout)mStatusBarView.findViewById(R.id.center_clock_layout);
-        mCenterDateLayout = (LinearLayout)mStatusBarView.findViewById(R.id.center_date_layout);
+        mNotificationIcons.setClockCenter(mClockCenter);
+        mNotificationIcons.setDateViewCenter(mDateViewCenter);        
+        
         mTickerView = mStatusBarView.findViewById(R.id.ticker);
 
         mPile = (NotificationRowLayout)mStatusBarWindow.findViewById(R.id.latestItems);
