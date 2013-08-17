@@ -43,8 +43,6 @@
     -->
     <string name="def_location_providers_allowed" translatable="false">gps</string>
     <bool name="assisted_gps_enabled">true</bool>
-    <!--  0 == mobile, 1 == wifi. -->
-    <integer name="def_network_preference">1</integer>
     <bool name="def_netstats_enabled">true</bool>
     <bool name="def_usb_mass_storage_enabled">true</bool>
     <bool name="def_wifi_on">false</bool>
@@ -78,12 +76,12 @@
     <string name="def_wireless_charging_started_sound" translatable="false">/system/media/audio/ui/WirelessChargingStarted.ogg</string>
 
     <bool name="def_power_notifications_enabled">false</bool>
-    <bool name="def_power_notifications_vibrate">true</bool>
+    <bool name="def_power_notifications_vibrate">false</bool>
     <string name="def_power_notifications_ringtone" translatable="false">content://settings/system/notification_sound</string>
 
     <bool name="def_lockscreen_disabled">false</bool>
     <bool name="def_device_provisioned">false</bool>
-    <integer name="def_volume_adjust_sounds_enabled">1</integer>
+    <integer name="def_dock_audio_media_enabled">1</integer>
 
     <!-- Notifications use ringer volume -->
     <bool name="def_notifications_use_ring_volume">true</bool>

@@ -14,30 +14,31 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.systemui.statusbar.phone.QuickSettingsTileView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/qs_tile_background"
-    android:gravity="center" >
-
+    android:layout_gravity="top"
+    android:orientation="vertical">
     <FrameLayout
-        android:id="@+id/rssi_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:paddingBottom="10dp" >
-
+        android:layout_marginTop="@dimen/qs_tile_margin_above_icon"
+        android:layout_marginBottom="@dimen/qs_tile_margin_below_icon"
+        android:layout_width="@dimen/qs_tile_icon_size"
+        android:layout_height="@dimen/qs_tile_icon_size"
+        android:layout_gravity="top|center_horizontal"
+        >
         <ImageView
             android:id="@+id/rssi_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
+            android:layout_gravity="center"
+            />
         <ImageView
             android:id="@+id/rssi_overlay_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            />
     </FrameLayout>
 
     <TextView
@@ -45,7 +46,8 @@
         style="@style/TextAppearance.QuickSettings.TileView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rssi_frame"
-        android:gravity="center_horizontal" />
-
-</com.android.systemui.statusbar.phone.QuickSettingsTileView>
+        android:layout_gravity="top|center_horizontal"
+        android:gravity="top|center_horizontal"
+        android:text="@string/quick_settings_rssi_label"
+        />
+</LinearLayout>

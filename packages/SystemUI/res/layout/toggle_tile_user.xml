@@ -27,6 +27,7 @@
         android:src="@drawable/ic_qs_default_user" />
 
     <TextView
+        style="@style/TextAppearance.QuickSettings.TileView.User"
         android:id="@+id/user_textview"
         style="@style/TextAppearance.QuickSettings.TileView"
         android:layout_width="match_parent"
@@ -34,6 +35,6 @@
         android:layout_alignParentBottom="true"
         android:background="@color/qs_tile_user_label"
         android:gravity="center"
-        android:text="@string/quick_settings_user_label" />
-
-</com.android.systemui.statusbar.phone.QuickSettingsTileView>
+        android:text="@string/quick_settings_user_label"
+        />
+</FrameLayout>
