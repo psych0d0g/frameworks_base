@@ -43,12 +43,14 @@ public class IconMerger extends LinearLayout {
     private View mMoreView;
     private ClockCenter mClockCenter;
     private DateViewCenter mDateViewCenter;
+    private View mCenterSpacer;
     private int mTotalWidth;
     private SettingsObserver mSettingsObserver;
     private boolean mAttached;   
-    private int mViewWidth;
+    private int mAvailWidth;
     private boolean mShowCenterClock;
     private boolean mShowCenterDate; 
+    private int mIconHPadding;
 
     public IconMerger(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -58,7 +60,8 @@ public class IconMerger extends LinearLayout {
                 Settings.System.STATUSBAR_FONT_SIZE, 16);
         mIconSize = StatusBarHelpers.getIconWidth(context, fontSize);
 		mTotalWidth = mContext.getResources().getDisplayMetrics().widthPixels;
-        
+        mIconHPadding = mContext.getResources().getDimensionPixelSize(
+                R.dimen.status_bar_icon_padding);
         if (DEBUG) {
             setBackgroundColor(0x800099FF);
         }
@@ -93,8 +96,8 @@ public class IconMerger extends LinearLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         // we need to constrain this to an integral multiple of our children
-        int width = getMeasuredWidth();
-        setMeasuredDimension(width - (width % mIconSize), getMeasuredHeight());
+        recalcSize();
+        setMeasuredDimension(mAvailWidth - (mAvailWidth % (mIconSize  + 2 * mIconHPadding)), getMeasuredHeight());
     }
 
     @Override
@@ -111,23 +114,23 @@ public class IconMerger extends LinearLayout {
 		mDateViewCenter = dateViewCenter;
 	}
 	
+	public void setCenterSpacer(View centerSpacer) {
+	    mCenterSpacer = centerSpacer;
+    }
+	
+	private void recalcSize() {
+	    if (mShowCenterClock){
+		    mAvailWidth = mTotalWidth/2 - mClockCenter.getMeasuredWidth()/2 - 10;
+		} else if (mShowCenterDate){
+			mAvailWidth = mTotalWidth/2 - mDateViewCenter.getMeasuredWidth()/2 - 10;
+		} else {
+		    mAvailWidth = getMeasuredWidth();
+		}
+	}
+	
     private void checkOverflow(int width) {
         if (mMoreView == null) return;
 
-        if (width != -1){
-		    mViewWidth = width;
-		}
-		
-		int availWidth = mViewWidth;
-		if (mShowCenterClock){
-			availWidth = mTotalWidth/2 - mClockCenter.getMeasuredWidth()/2 - 5;
-		}
-
-		if (mShowCenterDate){
-			availWidth = mTotalWidth/2 - mDateViewCenter.getMeasuredWidth()/2 - 5;
-		}
-		
-		//Log.d("maxwen", "with="+availWidth);
         final int N = getChildCount();
         int visibleChildren = 0;
         for (int i=0; i<N; i++) {
@@ -135,8 +138,9 @@ public class IconMerger extends LinearLayout {
         }
         final boolean overflowShown = (mMoreView.getVisibility() == View.VISIBLE);
         // let's assume we have one more slot if the more icon is already showing
-        if (overflowShown) visibleChildren --;
-        final boolean moreRequired = visibleChildren * mIconSize > availWidth;
+        //if (overflowShown) visibleChildren --;
+        //Log.d("maxwen", "getMeasuredWidth()="+getMeasuredWidth()+"getWidth()="+getWidth()+" mIconSize="+mIconSize);
+        final boolean moreRequired = visibleChildren * (mIconSize + 2 * mIconHPadding) > mAvailWidth;
         if (moreRequired != overflowShown) {
             post(new Runnable() {
                 @Override
@@ -161,6 +165,10 @@ public class IconMerger extends LinearLayout {
                     .getUriFor(Settings.System.STATUSBAR_SHOW_DATE), false,
                     this);
 
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.STATUSBAR_FONT_SIZE), false,
+                    this);
+
             updateSettings();
         }
 
@@ -177,6 +185,21 @@ public class IconMerger extends LinearLayout {
                 Settings.System.STATUSBAR_SHOW_DATE, false);
         mShowCenterClock = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_CLOCK_STYLE, Clock.STYLE_CLOCK_RIGHT) == Clock.STYLE_CLOCK_CENTER;
-        checkOverflow(-1);
+
+        int fontSize = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_FONT_SIZE, 16);
+        mIconSize = StatusBarHelpers.getIconWidth(mContext, fontSize);
+
+        // fore relayout and avail width calculation
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (mShowCenterDate || mShowCenterClock){
+                    mCenterSpacer.setVisibility(View.VISIBLE);
+                } else {
+                    mCenterSpacer.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 }
