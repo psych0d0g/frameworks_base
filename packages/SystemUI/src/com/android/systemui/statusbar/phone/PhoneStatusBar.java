@@ -220,6 +220,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     
     ClockCenter mClockCenter;
     DateViewCenter mDateViewCenter;
+    View mCenterSpacer;
     
 
     // expanded notifications
@@ -483,11 +484,13 @@ public class PhoneStatusBar extends BaseStatusBar {
         mClockCenter = (ClockCenter)mStatusBarView.findViewById(R.id.center_clock);
         mCenterDateLayout = (LinearLayout)mStatusBarView.findViewById(R.id.center_date_layout);
         mDateViewCenter = (DateViewCenter)mStatusBarView.findViewById(R.id.center_date);
+        mCenterSpacer = (View)mStatusBarView.findViewById(R.id.center_spacer);
         mNotificationIcons = (IconMerger)mStatusBarView.findViewById(R.id.notificationIcons);
         mMoreIcon = mStatusBarView.findViewById(R.id.moreIcon);
         mNotificationIcons.setOverflowIndicator(mMoreIcon);
         mNotificationIcons.setClockCenter(mClockCenter);
-        mNotificationIcons.setDateViewCenter(mDateViewCenter);        
+        mNotificationIcons.setDateViewCenter(mDateViewCenter);
+        mNotificationIcons.setCenterSpacer(mCenterSpacer);
         
         mTickerView = mStatusBarView.findViewById(R.id.ticker);
 
