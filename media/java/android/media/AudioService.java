@@ -6112,7 +6112,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
             if ((mSafeMediaVolumeState == SAFE_MEDIA_VOLUME_ACTIVE) &&
                     (mStreamVolumeAlias[streamType] == AudioSystem.STREAM_MUSIC) &&
                     ((device & mSafeMediaVolumeDevices) != 0) &&
-                    (index > mSafeMediaVolumeIndex) && mManualSafeMediaVolume) {
+                    (index > mSafeMediaVolumeIndex) && mManualSafeMediaVolume && mVolumePanel != null) {
                 mVolumePanel.postDisplaySafeVolumeWarning();
                 return false;
             }
