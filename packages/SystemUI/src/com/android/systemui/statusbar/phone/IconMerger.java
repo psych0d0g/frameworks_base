@@ -120,9 +120,9 @@ public class IconMerger extends LinearLayout {
 	
 	private void recalcSize() {
 	    if (mShowCenterClock){
-		    mAvailWidth = mTotalWidth/2 - mClockCenter.getMeasuredWidth()/2 - 10;
+		    mAvailWidth = mTotalWidth/2 - mClockCenter.getMeasuredWidth()/2 - mIconSize/2;
 		} else if (mShowCenterDate){
-			mAvailWidth = mTotalWidth/2 - mDateViewCenter.getMeasuredWidth()/2 - 10;
+			mAvailWidth = mTotalWidth/2 - mDateViewCenter.getMeasuredWidth()/2 - mIconSize/2;
 		} else {
 		    mAvailWidth = getMeasuredWidth();
 		}
@@ -189,6 +189,8 @@ public class IconMerger extends LinearLayout {
         int fontSize = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_FONT_SIZE, 16);
         mIconSize = StatusBarHelpers.getIconWidth(mContext, fontSize);
+        mIconHPadding = mContext.getResources().getDimensionPixelSize(
+                R.dimen.status_bar_icon_padding);
 
         // fore relayout and avail width calculation
         post(new Runnable() {
