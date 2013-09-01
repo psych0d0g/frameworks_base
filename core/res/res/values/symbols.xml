@@ -1401,7 +1401,6 @@
   <java-symbol type="integer" name="config_defaultUiModeType" />
   <java-symbol type="integer" name="config_uiInvertedMode" />
   <java-symbol type="integer" name="config_deskDockRotation" />
-  <java-symbol type="integer" name="config_doubleTapOnHomeBehavior" />
   <java-symbol type="integer" name="config_lidKeyboardAccessibility" />
   <java-symbol type="integer" name="config_lidNavigationAccessibility" />
   <java-symbol type="integer" name="config_lidOpenRotation" />

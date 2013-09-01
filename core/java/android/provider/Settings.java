@@ -5907,7 +5907,6 @@ public final class Settings {
         public static final String SCREENSAVER_DEFAULT_COMPONENT = "screensaver_default_component";
 
         /**
-<<<<<<< HEAD
          * If screensavers are enabled, whether the screensaver should be automatically launched
          * when charging wirelessly.
          */
@@ -5980,7 +5979,7 @@ public final class Settings {
             UI_INVERTED_MODE,
             LOCK_SCREEN_OWNER_INFO,
             LOCK_SCREEN_OWNER_INFO_ENABLED,
-            PRIVACY_GUARD_DEFAULT
+            PRIVACY_GUARD_DEFAULT,
             DIALPAD_AUTOCOMPLETE
         };
 

@@ -39,6 +39,7 @@ import android.graphics.Rect;
 import android.media.RemoteControlClient;
 import android.os.Looper;
 import android.os.Parcel;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.UserHandle;
@@ -144,11 +145,6 @@ public class KeyguardHostView extends KeyguardViewBase {
 
     public KeyguardHostView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mLockPatternUtils = new LockPatternUtils(context);
-        mUserId = mLockPatternUtils.getCurrentUser();
-        mAppWidgetHost = new AppWidgetHost(
-                context, APPWIDGET_HOST_ID, mOnClickHandler, Looper.myLooper());
-        mAppWidgetHost.setUserId(mUserId);
 
         if (DEBUG) Log.e(TAG, "KeyguardHostView()");
 
@@ -1195,6 +1191,10 @@ public class KeyguardHostView extends KeyguardViewBase {
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appId);
         if (appWidgetInfo != null) {
             AppWidgetHostView view = mAppWidgetHost.createView(mContext, appId, appWidgetInfo);
+            Bundle options = new Bundle();
+            options.putInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY,
+                AppWidgetProviderInfo.WIDGET_CATEGORY_KEYGUARD);
+            view.updateAppWidgetOptions(options);
             addWidget(view, pageIndex);
             return true;
         } else {
@@ -1605,17 +1605,33 @@ public class KeyguardHostView extends KeyguardViewBase {
     }
 
     private void enableUserSelectorIfNecessary() {
-        if (!UserManager.supportsMultipleUsers()) return; // device doesn't support multi-user mode
-
+        if (!UserManager.supportsMultipleUsers()) {
+            return; // device doesn't support multi-user mode
+        }
         final UserManager um = (UserManager) mContext.getSystemService(Context.USER_SERVICE);
-        if (um == null) return;
+        if (um == null) {
+            Throwable t = new Throwable();
+            t.fillInStackTrace();
+            Log.e(TAG, "user service is null.", t);
+            return;
+        }
 
         // if there are multiple users, we need to enable to multi-user switcher
         final List<UserInfo> users = um.getUsers(true);
-        if (users == null) return;
+        if (users == null) {
+            Throwable t = new Throwable();
+            t.fillInStackTrace();
+            Log.e(TAG, "list of users is null.", t);
+            return;
+        }
 
         final View multiUserView = findViewById(R.id.keyguard_user_selector);
-        if (multiUserView == null) return;
+        if (multiUserView == null) {
+            Throwable t = new Throwable();
+            t.fillInStackTrace();
+            Log.e(TAG, "can't find user_selector in layout.", t);
+            return;
+        }
 
         if (users.size() > 1) {
             if (multiUserView instanceof KeyguardMultiUserSelectorView) {

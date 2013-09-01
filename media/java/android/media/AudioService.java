@@ -187,8 +187,8 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
     /** @see VolumeStreamState */
     private VolumeStreamState[] mStreamStates;
     private SettingsObserver mSettingsObserver;
-    //nodelay in a2dp
-    private boolean noDelayInATwoDP = Resources.getSystem().getBoolean(com.android.internal.R.bool.config_noDelayInATwoDP);
+    private boolean noDelayInATwoDP =
+            Resources.getSystem().getBoolean(com.android.internal.R.bool.config_noDelayInATwoDP);
 
     private int mMode;
     // protects mRingerMode
@@ -235,7 +235,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
      * NOTE: do not create loops in aliases!
      * Some streams alias to different streams according to device category (phone or tablet) or
      * use case (in call s off call...).See updateStreamVolumeAlias() for more details
-     *  mStreamVolumeAlias contains the default aliases for a voice capable device (phone) and
+     *  STREAM_VOLUME_ALIAS contains the default aliases for a voice capable device (phone) and
      *  STREAM_VOLUME_ALIAS_NON_VOICE for a non voice capable device (tablet).*/
     private final int[] STREAM_VOLUME_ALIAS = new int[] {
         AudioSystem.STREAM_VOICE_CALL,      // STREAM_VOICE_CALL
@@ -483,6 +483,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
         sSoundEffectVolumeDb = context.getResources().getInteger(
                 com.android.internal.R.integer.config_soundEffectVolumeDb);
 
+        mVolumePanel = new VolumePanel(context, this);
         mMode = AudioSystem.MODE_NORMAL;
         mForcedUseForComm = AudioSystem.FORCE_NONE;
 
@@ -528,8 +529,9 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
         // Register for device connection intent broadcasts.
         IntentFilter intentFilter =
                 new IntentFilter(BluetoothHeadset.ACTION_AUDIO_STATE_CHANGED);
-        if (noDelayInATwoDP)
+        if (noDelayInATwoDP) {
             intentFilter.addAction(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED);
+        }
         intentFilter.addAction(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED);
         intentFilter.addAction(Intent.ACTION_DOCK_EVENT);
         intentFilter.addAction(Intent.ACTION_USB_AUDIO_ACCESSORY_PLUG);
@@ -541,7 +543,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
         intentFilter.addAction(Intent.ACTION_USER_SWITCHED);
         intentFilter.addAction(Intent.ACTION_WIFI_DISPLAY_AUDIO);
         intentFilter.addAction(Intent.ACTION_HEADSET_PLUG);
-        
+
         intentFilter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         // TODO merge orientation and rotation
         mMonitorOrientation = SystemProperties.getBoolean("ro.audio.monitorOrientation", false);
@@ -1947,7 +1949,7 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
     /** @see AudioManager#setBluetoothA2dpOn(boolean) */
     public void setBluetoothA2dpOn(boolean on) {
-        if (noDelayInATwoDP && !checkAudioSettingsPermission("setBluetoothA2dpOn()")) {
+        if (!checkAudioSettingsPermission("setBluetoothA2dpOn()") && noDelayInATwoDP) {
             return;
         }
         synchronized (mBluetoothA2dpEnabledLock) {
@@ -2288,18 +2290,18 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                 deviceList = a2dp.getConnectedDevices();
                 if (deviceList.size() > 0) {
                     btDevice = deviceList.get(0);
-                    if (!noDelayInATwoDP){
-		                synchronized (mConnectedDevices) {
-		                    int state = a2dp.getConnectionState(btDevice);
-		                    int delay = checkSendBecomingNoisyIntent(
-		                                            AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
-		                                            (state == BluetoothA2dp.STATE_CONNECTED) ? 1 : 0);
-		                    queueMsgUnderWakeLock(mAudioHandler,
-		                            MSG_SET_A2DP_CONNECTION_STATE,
-		                            state,
-		                            0,
-		                            btDevice,
-		                            delay);
+                    if (!noDelayInATwoDP) {
+                        synchronized (mConnectedDevices) {
+                            int state = a2dp.getConnectionState(btDevice);
+                            int delay = checkSendBecomingNoisyIntent(
+                                                AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
+                                                (state == BluetoothA2dp.STATE_CONNECTED) ? 1 : 0);
+                            queueMsgUnderWakeLock(mAudioHandler,
+                                    MSG_SET_A2DP_CONNECTION_STATE,
+                                    state,
+                                    0,
+                                    btDevice,
+                                    delay);
                         }
                     } else {
                         onSetA2dpConnectionState(btDevice, a2dp.getConnectionState(btDevice));
@@ -2742,19 +2744,18 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
         }
     }
 
-    public int setBluetoothA2dpDeviceConnectionState(BluetoothDevice device, int state)
-    {
+    public int setBluetoothA2dpDeviceConnectionState(BluetoothDevice device, int state) {
         int delay;
-        if(!noDelayInATwoDP) {
-		    synchronized (mConnectedDevices) {
-		        delay = checkSendBecomingNoisyIntent(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
-		                                        (state == BluetoothA2dp.STATE_CONNECTED) ? 1 : 0);
-		        queueMsgUnderWakeLock(mAudioHandler,
-		                MSG_SET_A2DP_CONNECTION_STATE,
-		                state,
-		                0,
-		                device,
-		                delay);
+        if (!noDelayInATwoDP) {
+            synchronized (mConnectedDevices) {
+                delay = checkSendBecomingNoisyIntent(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
+                                                (state == BluetoothA2dp.STATE_CONNECTED) ? 1 : 0);
+                queueMsgUnderWakeLock(mAudioHandler,
+                        MSG_SET_A2DP_CONNECTION_STATE,
+                        state,
+                        0,
+                        device,
+                        delay);
             }
         } else {
             delay = 0;
@@ -3748,8 +3749,9 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
 
     // must be called synchronized on mConnectedDevices
     private void makeA2dpDeviceUnavailableNow(String address) {
-        if (noDelayInATwoDP)
+        if (noDelayInATwoDP) {
             onSendBecomingNoisyIntent();
+        }
         AudioSystem.setDeviceConnectionState(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP,
                 AudioSystem.DEVICE_STATE_UNAVAILABLE,
                 address);
@@ -3960,7 +3962,6 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
                 setBluetoothA2dpOnInt(true);
             }
             boolean isUsb = ((device & AudioSystem.DEVICE_OUT_ALL_USB) != 0);
-            Log.d(TAG, "isUsb "+ isUsb);
             handleDeviceConnection((state == 1), device, (isUsb ? name : ""));
             if (state != 0) {
                 if ((device == AudioSystem.DEVICE_OUT_WIRED_HEADSET) ||
@@ -6716,8 +6717,8 @@ public class AudioService extends IAudioService.Stub implements OnFinished {
             if ((mSafeMediaVolumeState == SAFE_MEDIA_VOLUME_ACTIVE) &&
                     (mStreamVolumeAlias[streamType] == AudioSystem.STREAM_MUSIC) &&
                     ((device & mSafeMediaVolumeDevices) != 0) &&
-                    (index > mSafeMediaVolumeIndex) && mManualSafeMediaVolume) {
-                mVolumePanel.postDisplaySafeVolumeWarning();
+                    (index > mSafeMediaVolumeIndex) && mManualSafeMediaVolume && mVolumePanel != null) {
+                mVolumePanel.postDisplaySafeVolumeWarning(0);
                 return false;
             }
             return true;

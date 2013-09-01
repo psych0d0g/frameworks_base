@@ -439,7 +439,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
     }
 
-<<<<<<< HEAD
     private void writeBlockDb() {
         synchronized (mBlockedPackages) {
             FileOutputStream outfile = null;

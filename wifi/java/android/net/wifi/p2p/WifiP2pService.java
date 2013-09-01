@@ -1770,17 +1770,6 @@ public class WifiP2pService extends IWifiP2pManager.Stub {
                     }
                     // TODO: figure out updating the status to declined when invitation is rejected
                     break;
-               case WifiP2pManager.CANCEL_CONNECT:
-                   device = (WifiP2pDevice) message.obj;
-                   if (mPeers.remove(device)) {
-                           sendP2pPeersChangedBroadcast();
-                           replyToMessage(message, WifiP2pManager.CANCEL_CONNECT_SUCCEEDED);
-                           sendMessage(WifiP2pManager.DISCOVER_PEERS);
-                   } else {
-                           replyToMessage(message, WifiP2pManager.CANCEL_CONNECT_FAILED,
-                                           WifiP2pManager.BUSY);
-                   }
-                    break;
                 case WifiMonitor.P2P_INVITATION_RESULT_EVENT:
                     P2pStatus status = (P2pStatus)message.obj;
                     if (status == P2pStatus.SUCCESS) {
@@ -1819,7 +1808,11 @@ public class WifiP2pService extends IWifiP2pManager.Stub {
                     } else {
                         mSavedPeerConfig.wps.setup = WpsInfo.PBC;
                     }
-                    transitionTo(mUserAuthorizingJoinState);
+                    if (DBG) logd("mGroup.isGroupOwner()" + mGroup.isGroupOwner());
+                    if (mGroup.isGroupOwner()) {
+                        if (DBG) logd("Local device is Group Owner, transiting to mUserAuthorizingJoinState");
+                        transitionTo(mUserAuthorizingJoinState);
+                    }
                     break;
                 case WifiMonitor.P2P_GROUP_STARTED_EVENT:
                     loge("Duplicate group creation event notice, ignore");
