@@ -27,8 +27,8 @@
         android:src="@drawable/ic_qs_default_user" />
 
     <TextView
-        style="@style/TextAppearance.QuickSettings.TileView.User"
         android:id="@+id/user_textview"
+        style="@style/TextAppearance.QuickSettings.TileView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

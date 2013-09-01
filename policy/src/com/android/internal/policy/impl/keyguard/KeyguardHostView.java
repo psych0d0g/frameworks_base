@@ -167,7 +167,6 @@ public class KeyguardHostView extends KeyguardViewBase {
         	mCameraDisabled = (Settings.System.getBoolean(mContext.getContentResolver(),
             	Settings.System.CAMERA_WIDGET_HIDE, false));
 
-        cleanupAppWidgetIds();
         mSafeModeEnabled = LockPatternUtils.isSafeModeEnabled();
 
         // These need to be created with the user context...
@@ -414,11 +413,9 @@ public class KeyguardHostView extends KeyguardViewBase {
         addDefaultWidgets();
 
         addWidgetsFromSettings();
-
         if (!shouldEnableAddWidget()) {
             mAppWidgetContainer.setAddWidgetEnabled(false);
         }
-
         checkAppWidgetConsistency();
         mSwitchPageRunnable.run();
         // This needs to be called after the pages are all added.
