@@ -439,46 +439,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         }
     }
 
-    private void writeBlockDb() {
-        synchronized (mBlockedPackages) {
-            FileOutputStream outfile = null;
-            try {
-                outfile = mPolicyFile.startWrite();
-
-                XmlSerializer out = new FastXmlSerializer();
-                out.setOutput(outfile, "utf-8");
-
-                out.startDocument(null, true);
-
-                out.startTag(null, TAG_BODY);
-                {
-                    out.attribute(null, ATTR_VERSION, String.valueOf(DB_VERSION));
-                    out.startTag(null, TAG_BLOCKED_PKGS);
-                    {
-                        // write all known network policies
-                        for (String pkg : mBlockedPackages) {
-                            out.startTag(null, TAG_PACKAGE);
-                            {
-                                out.attribute(null, ATTR_NAME, pkg);
-                            }
-                            out.endTag(null, TAG_PACKAGE);
-                        }
-                    }
-                    out.endTag(null, TAG_BLOCKED_PKGS);
-                }
-                out.endTag(null, TAG_BODY);
-
-                out.endDocument();
-
-                mPolicyFile.finishWrite(outfile);
-            } catch (IOException e) {
-                if (outfile != null) {
-                    mPolicyFile.failWrite(outfile);
-                }
-            }
-        }
-    }
-
     /**
      * Use this when you just want to know if notifications are OK for this package.
      */
@@ -989,7 +949,6 @@ public class NotificationManagerService extends INotificationManager.Stub
         public Notification getNotification() { return sbn.getNotification(); }
         public int getFlags() { return sbn.getNotification().flags; }
         public int getUserId() { return sbn.getUserId(); }
-
         void dump(PrintWriter pw, String prefix, Context baseContext) {
             final Notification notification = sbn.getNotification();
             pw.println(prefix + this);
@@ -1346,17 +1305,17 @@ public class NotificationManagerService extends INotificationManager.Stub
 
             // LED default color
             mDefaultNotificationColor = Settings.System.getIntForUser(resolver,
-                    Settings.System.NOTIFICATION_LIGHT_PULSE_DEFAULT_COLOR, mDefaultNotificationColor,
+                    Settings.System.NOTIFICATION_LIGHT_COLOR, mDefaultNotificationColor,
                     UserHandle.USER_CURRENT);
 
             // LED default on MS
             mDefaultNotificationLedOn = Settings.System.getIntForUser(resolver,
-                    Settings.System.NOTIFICATION_LIGHT_PULSE_DEFAULT_LED_ON, mDefaultNotificationLedOn,
+                    Settings.System.NOTIFICATION_LIGHT_ON, mDefaultNotificationLedOn,
                     UserHandle.USER_CURRENT);
 
             // LED default off MS
             mDefaultNotificationLedOff = Settings.System.getIntForUser(resolver,
-                    Settings.System.NOTIFICATION_LIGHT_PULSE_DEFAULT_LED_OFF, mDefaultNotificationLedOff,
+                    Settings.System.NOTIFICATION_LIGHT_OFF, mDefaultNotificationLedOff,
                     UserHandle.USER_CURRENT);
 
             mCustomLedColors.clear();
@@ -2027,7 +1986,7 @@ public class NotificationManagerService extends INotificationManager.Stub
                 // turned off completely at the time the screen is turned off)
                 if (mLedNotification == null || !mScreenOn) {
                     mLedNotification = r;
-                } else if ((mLedNotification.notification.flags &
+                } else if ((mLedNotification.getNotification().flags &
                         Notification.FLAG_FORCE_LED_SCREEN_OFF) == 0) {
                     mLedNotification = r;
                 }
@@ -2350,7 +2309,7 @@ public class NotificationManagerService extends INotificationManager.Stub
         // For special notifications that automatically turn the screen on (such
         // as missed calls), we use this flag to force the notification light
         // even if the screen was turned off.
-        boolean forceWithScreenOff = (mLedNotification.notification.flags &
+        boolean forceWithScreenOff = (mLedNotification.getNotification().flags &
                 Notification.FLAG_FORCE_LED_SCREEN_OFF) != 0;
 
         // Don't flash while we are in a call, screen is on or we are in quiet hours with light dimmed
@@ -2417,12 +2376,12 @@ public class NotificationManagerService extends INotificationManager.Stub
         String notiPackage = null;
         String talk = "com.google.android.gsf";
         String phone = "com.android.phone";
-        if ((ledNotification.pkg).equals(talk)) {
+        if ((ledNotification.sbn.getPackageName()).equals(talk)) {
             notiPackage = "com.google.android.talk";
-        } else if ((ledNotification.pkg).equals(phone)) {
+        } else if ((ledNotification.sbn.getPackageName()).equals(phone)) {
             notiPackage = "com.android.contacts";
         } else {
-            notiPackage = ledNotification.pkg;
+            notiPackage = ledNotification.sbn.getPackageName();
         }
         return mCustomLedColors.get(notiPackage);
     }

@@ -956,12 +956,6 @@ public final class ActivityManagerService  extends ActivityManagerNative
         //    if (localLOGV) Slog.v(TAG, "Handler started!");
         //}
 
-        private boolean isRevokeEnabled() {
-            return android.provider.Settings.Secure.getInt(mContext.getContentResolver(),
-                    android.provider.Settings.Secure.ENABLE_PERMISSIONS_MANAGEMENT,
-                    0) == 1;
-        }
-
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case SHOW_ERROR_MSG: {
@@ -988,23 +982,8 @@ public final class ActivityManagerService  extends ActivityManagerNative
                         return;
                     }
                     if (mShowDialogs && !mSleeping && !mShuttingDown) {
-                        boolean hasRevoked = false;
-                        if (isRevokeEnabled()) {
-                            for (String s: proc.pkgList) {
-                                try {
-                                    String[] perms = AppGlobals.getPackageManager().getRevokedPermissions(s);
-                                    if (perms != null && perms.length > 0) {
-                                        hasRevoked = true;
-                                        break;
-                                    }
-                                }
-                                catch (RemoteException e) {
-                                    // just ignore this.
-                                }
-                            }
-                        }
                         Dialog d = new AppErrorDialog(getUiContext(),
-                                ActivityManagerService.this, res, proc, hasRevoked);
+                                ActivityManagerService.this, res, proc);
                         d.show();
                         proc.crashDialog = d;
                     } else {
@@ -1114,9 +1093,9 @@ public final class ActivityManagerService  extends ActivityManagerNative
             case SERVICE_TIMEOUT_MSG: {
                 if (mDidDexOpt) {
                     mDidDexOpt = false;
-                    Message nmsg = obtainMessage(SERVICE_TIMEOUT_MSG);
+                    Message nmsg = mHandler.obtainMessage(SERVICE_TIMEOUT_MSG);
                     nmsg.obj = msg.obj;
-                    sendMessageDelayed(nmsg, ActiveServices.SERVICE_TIMEOUT);
+                    mHandler.sendMessageDelayed(nmsg, ActiveServices.SERVICE_TIMEOUT);
                     return;
                 }
                 mServices.serviceTimeout((ProcessRecord)msg.obj);
@@ -1186,7 +1165,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
                     d.setTitle(title);
                     d.setMessage(text);
                     d.setButton(DialogInterface.BUTTON_POSITIVE, "I'm Feeling Lucky",
-                            obtainMessage(IM_FEELING_LUCKY_MSG));
+                            mHandler.obtainMessage(IM_FEELING_LUCKY_MSG));
                     mUidAlert = d;
                     d.show();
                 }
@@ -1200,9 +1179,9 @@ public final class ActivityManagerService  extends ActivityManagerNative
             case PROC_START_TIMEOUT_MSG: {
                 if (mDidDexOpt) {
                     mDidDexOpt = false;
-                    Message nmsg = obtainMessage(PROC_START_TIMEOUT_MSG);
+                    Message nmsg = mHandler.obtainMessage(PROC_START_TIMEOUT_MSG);
                     nmsg.obj = msg.obj;
-                    sendMessageDelayed(nmsg, PROC_START_TIMEOUT);
+                    mHandler.sendMessageDelayed(nmsg, PROC_START_TIMEOUT);
                     return;
                 }
                 ProcessRecord app = (ProcessRecord)msg.obj;
@@ -1461,7 +1440,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
 
                     try {
                         int[] outId = new int[1];
-                        inm.enqueueNotificationWithTag("android", null,
+                        inm.enqueueNotificationWithTag("android", "android", null,
                                 R.string.privacy_guard_notification,
                                 notification, outId, root.userId);
                     } catch (RuntimeException e) {
@@ -2036,12 +2015,14 @@ public final class ActivityManagerService  extends ActivityManagerNative
             ProcessRecord p = mLruProcesses.get(i);
             // If this app shouldn't be in front of the first N background
             // apps, then skip over that many that are currently hidden.
-            if (skipTop > 0 && p.setAdj >= ProcessList.HIDDEN_APP_MIN_ADJ) {
-                skipTop--;
-            }
-            if (p.lruWeight <= app.lruWeight || i < bestPos) {
-                mLruProcesses.add(i+1, app);
-                break;
+            if (p != null && p.thread != null) {
+                if (skipTop > 0 && p.setAdj >= ProcessList.HIDDEN_APP_MIN_ADJ) {
+                    skipTop--;
+                }
+                if (p.lruWeight <= app.lruWeight || i < bestPos) {
+                    mLruProcesses.add(i+1, app);
+                    break;
+                }
             }
             i--;
         }
@@ -2260,7 +2241,6 @@ public final class ActivityManagerService  extends ActivityManagerNative
                     }
                 } catch (PackageManager.NameNotFoundException e) {
                     Slog.w(TAG, "Unable to retrieve gids", e);
-                    return;
                 }
 
                 /*
@@ -3364,7 +3344,6 @@ public final class ActivityManagerService  extends ActivityManagerNative
             final File tracesFile = new File(tracesPath);
             final File tracesDir = tracesFile.getParentFile();
             final File tracesTmp = new File(tracesDir, "__tmp__");
-            FileOutputStream fos = null;
             try {
                 if (!tracesDir.exists()) {
                     tracesFile.mkdirs();
@@ -3386,23 +3365,16 @@ public final class ActivityManagerService  extends ActivityManagerNative
                 TimeUtils.formatDuration(SystemClock.uptimeMillis()-startTime, sb);
                 sb.append(" since ");
                 sb.append(msg);
-                fos = new FileOutputStream(tracesFile);
+                FileOutputStream fos = new FileOutputStream(tracesFile);
                 fos.write(sb.toString().getBytes());
                 if (app == null) {
                     fos.write("\n*** No application process!".getBytes());
                 }
+                fos.close();
+                FileUtils.setPermissions(tracesFile.getPath(), 0666, -1, -1); // -rw-rw-rw-
             } catch (IOException e) {
                 Slog.w(TAG, "Unable to prepare slow app traces file: " + tracesPath, e);
                 return;
-            } finally {
-                try {
-                    if (fos != null) {
-                        fos.close();
-                    }
-                    FileUtils.setPermissions(tracesFile.getPath(), 0666, -1, -1); // -rw-rw-rw-
-                } catch (IOException ignored) {
-                    // let it go
-                }
             }
 
             if (app != null) {
@@ -4595,7 +4567,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
                 mUiContext = null;
             }
         });
-
+        
         synchronized (this) {
             // Ensure that any processes we had put on hold are now started
             // up.
@@ -4612,8 +4584,8 @@ public final class ActivityManagerService  extends ActivityManagerNative
             
             if (mFactoryTest != SystemServer.FACTORY_TEST_LOW_LEVEL) {
                 // Start looking for apps that are abusing wake locks.
-                mHandler.sendEmptyMessageDelayed(CHECK_EXCESSIVE_WAKE_LOCKS_MSG,
-                        POWER_CHECK_DELAY);
+                Message nmsg = mHandler.obtainMessage(CHECK_EXCESSIVE_WAKE_LOCKS_MSG);
+                mHandler.sendMessageDelayed(nmsg, POWER_CHECK_DELAY);
                 // Tell anyone interested that we are done booting!
                 SystemProperties.set("sys.boot_completed", "1");
                 SystemProperties.set("dev.bootcomplete", "1");
@@ -6667,7 +6639,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
                     // pending on the process even though we managed to update its
                     // adj level.  Not sure what to do about this, but at least
                     // the race is now smaller.
-                    if (!success || !Process.isAlive(cpr.proc.pid)) {
+                    if (!success) {
                         // Uh oh...  it looks like the provider's process
                         // has been killed on us.  We need to wait for a new
                         // process to be started, and make sure its death
@@ -6676,9 +6648,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
                                 "Existing provider " + cpr.name.flattenToShortString()
                                 + " is crashing; detaching " + r);
                         boolean lastRef = decProviderCountLocked(conn, cpr, token, stable);
-                        if (!success) {
-                            appDiedLocked(cpr.proc, cpr.proc.pid, cpr.proc.thread);
-                        }
+                        appDiedLocked(cpr.proc, cpr.proc.pid, cpr.proc.thread);
                         if (!lastRef) {
                             // This wasn't the last ref our process had on
                             // the provider...  we have now been killed, bail.
@@ -7321,8 +7291,8 @@ public final class ActivityManagerService  extends ActivityManagerNative
                 // Initialize the wake times of all processes.
                 checkExcessivePowerUsageLocked(false);
                 mHandler.removeMessages(CHECK_EXCESSIVE_WAKE_LOCKS_MSG);
-                mHandler.sendEmptyMessageDelayed(CHECK_EXCESSIVE_WAKE_LOCKS_MSG,
-                        POWER_CHECK_DELAY);
+                Message nmsg = mHandler.obtainMessage(CHECK_EXCESSIVE_WAKE_LOCKS_MSG);
+                mHandler.sendMessageDelayed(nmsg, POWER_CHECK_DELAY);
             }
         }
     }
@@ -7437,8 +7407,8 @@ public final class ActivityManagerService  extends ActivityManagerNative
                     + APP_SWITCH_DELAY_TIME;
             mDidAppSwitch = false;
             mHandler.removeMessages(DO_PENDING_ACTIVITY_LAUNCHES_MSG);
-            mHandler.sendEmptyMessageDelayed(DO_PENDING_ACTIVITY_LAUNCHES_MSG,
-                    APP_SWITCH_DELAY_TIME);
+            Message msg = mHandler.obtainMessage(DO_PENDING_ACTIVITY_LAUNCHES_MSG);
+            mHandler.sendMessageDelayed(msg, APP_SWITCH_DELAY_TIME);
         }
     }
     
@@ -7562,6 +7532,10 @@ public final class ActivityManagerService  extends ActivityManagerNative
     public void setActivityController(IActivityController controller) {
         enforceCallingPermission(android.Manifest.permission.SET_ACTIVITY_WATCHER,
                 "setActivityController()");
+
+        int pid = controller == null ? 0 : Binder.getCallingPid();
+        Watchdog.getInstance().processStarted("ActivityController", pid);
+
         synchronized (this) {
             mController = controller;
             Watchdog.getInstance().setActivityController(controller);
@@ -8040,7 +8014,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
 
     public boolean testIsSystemReady() {
         // no need to synchronize(this) just to read & return the value
-        return mSystemReady && mProcessesReady;
+        return mSystemReady;
     }
     
     private static File getCalledPreBootReceiversFile() {
@@ -8318,7 +8292,9 @@ public final class ActivityManagerService  extends ActivityManagerNative
             
             try {
                 if (AppGlobals.getPackageManager().hasSystemUidErrors()) {
-                    mHandler.sendEmptyMessage(SHOW_UID_ERROR_MSG);
+                    Message msg = Message.obtain();
+                    msg.what = SHOW_UID_ERROR_MSG;
+                    mHandler.sendMessage(msg);
                 }
             } catch (RemoteException e) {
             }
@@ -9067,15 +9043,6 @@ public final class ActivityManagerService  extends ActivityManagerNative
             }
             if (res == AppErrorDialog.FORCE_QUIT_AND_REPORT) {
                 appErrorIntent = createAppErrorIntentLocked(r, timeMillis, crashInfo);
-            } else if (res == AppErrorDialog.FORCE_QUIT_AND_RESET_PERMS) {
-                for (String pkg: r.pkgList) {
-                    long oldId = Binder.clearCallingIdentity();
-                    try {
-                        AppGlobals.getPackageManager().setRevokedPermissions(pkg, new String[0]);
-                    } catch (RemoteException e) {
-                    }
-                    Binder.restoreCallingIdentity(oldId);
-                }
             }
         }
 
@@ -13707,7 +13674,7 @@ public final class ActivityManagerService  extends ActivityManagerNative
                 if (mPendingProcessChanges.size() == 0) {
                     if (DEBUG_PROCESS_OBSERVERS) Slog.i(TAG,
                             "*** Enqueueing dispatch processes changed!");
-                    mHandler.sendEmptyMessage(DISPATCH_PROCESSES_CHANGED);
+                    mHandler.obtainMessage(DISPATCH_PROCESSES_CHANGED).sendToTarget();
                 }
                 mPendingProcessChanges.add(item);
             }
@@ -13814,13 +13781,14 @@ public final class ActivityManagerService  extends ActivityManagerNative
         if (mProcessesToGc.size() > 0) {
             // Schedule a GC for the time to the next process.
             ProcessRecord proc = mProcessesToGc.get(0);
-
+            Message msg = mHandler.obtainMessage(GC_BACKGROUND_PROCESSES_MSG);
+            
             long when = proc.lastRequestedGc + GC_MIN_INTERVAL;
             long now = SystemClock.uptimeMillis();
             if (when < (now+GC_TIMEOUT)) {
                 when = now + GC_TIMEOUT;
             }
-            mHandler.sendEmptyMessageAtTime(GC_BACKGROUND_PROCESSES_MSG, when);
+            mHandler.sendMessageAtTime(msg, when);
         }
     }
     

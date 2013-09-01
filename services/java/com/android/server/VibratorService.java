@@ -240,9 +240,7 @@ public class VibratorService extends IVibratorService.Stub
         if (inQuietHours()) {
             return;
         }
-        int uid = Binder.getCallingUid();
         verifyIncomingUid(uid);
-
         // so wakelock calls will succeed
         long identity = Binder.clearCallingIdentity();
         try {
