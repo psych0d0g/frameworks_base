@@ -17,11 +17,10 @@ public class BluetoothToggle extends StatefulToggle {
     public void init(Context c, int style) {
         super.init(c, style);
 
-        BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
-        if (bt == null) {
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
             return;
         }
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         onBluetoothChanged();
 
         IntentFilter filter = new IntentFilter();
@@ -75,7 +74,6 @@ public class BluetoothToggle extends StatefulToggle {
         }
         setInfo(label, iconId);
         updateCurrentState(newState);
-        scheduleViewUpdate();
     }
 
     @Override
