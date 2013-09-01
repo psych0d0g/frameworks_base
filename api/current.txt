@@ -12,6 +12,7 @@ package android {
     field public static final java.lang.String ACCESS_LOCATION_EXTRA_COMMANDS = "android.permission.ACCESS_LOCATION_EXTRA_COMMANDS";
     field public static final java.lang.String ACCESS_MOCK_LOCATION = "android.permission.ACCESS_MOCK_LOCATION";
     field public static final java.lang.String ACCESS_NETWORK_STATE = "android.permission.ACCESS_NETWORK_STATE";
+    field public static final java.lang.String ACCESS_SUPERUSER = "android.permission.ACCESS_SUPERUSER";
     field public static final java.lang.String ACCESS_SURFACE_FLINGER = "android.permission.ACCESS_SURFACE_FLINGER";
     field public static final java.lang.String ACCESS_WIFI_STATE = "android.permission.ACCESS_WIFI_STATE";
     field public static final java.lang.String ACCOUNT_MANAGER = "android.permission.ACCOUNT_MANAGER";
@@ -2680,6 +2681,19 @@ package android.app {
     method public abstract void onTabUnselected(android.app.ActionBar.Tab, android.app.FragmentTransaction);
   }
 
+  public class ActionBarDrawerToggle implements android.widget.DrawerLayout.DrawerListener {
+    ctor public ActionBarDrawerToggle(android.app.Activity, android.widget.DrawerLayout, int, int, int);
+    method public boolean isDrawerIndicatorEnabled();
+    method public void onConfigurationChanged(android.content.res.Configuration);
+    method public void onDrawerClosed(android.view.View);
+    method public void onDrawerOpened(android.view.View);
+    method public void onDrawerSlide(android.view.View, float);
+    method public void onDrawerStateChanged(int);
+    method public boolean onOptionsItemSelected(android.view.MenuItem);
+    method public void setDrawerIndicatorEnabled(boolean);
+    method public void syncState();
+  }
+
   public class Activity extends android.view.ContextThemeWrapper implements android.content.ComponentCallbacks2 android.view.KeyEvent.Callback android.view.LayoutInflater.Factory2 android.view.View.OnCreateContextMenuListener android.view.Window.Callback {
     ctor public Activity();
     method public void addContentView(android.view.View, android.view.ViewGroup.LayoutParams);
@@ -2700,6 +2714,7 @@ package android.app {
     method public void finishActivityFromChild(android.app.Activity, int);
     method public void finishAffinity();
     method public void finishFromChild(android.app.Activity);
+    method public int gemStatusbarSwipePosBarHeight();
     method public android.app.ActionBar getActionBar();
     method public final android.app.Application getApplication();
     method public android.content.ComponentName getCallingActivity();
@@ -2897,6 +2912,7 @@ package android.app {
     method public void moveTaskToFront(int, int);
     method public void moveTaskToFront(int, int, android.os.Bundle);
     method public deprecated void restartPackage(java.lang.String);
+    method public void updateConfiguration(android.content.res.Configuration) throws java.lang.SecurityException;
     field public static final int MOVE_TASK_NO_USER_ACTION = 2; // 0x2
     field public static final int MOVE_TASK_WITH_HOME = 1; // 0x1
     field public static final int RECENT_IGNORE_UNAVAILABLE = 2; // 0x2
@@ -4233,6 +4249,12 @@ package android.app {
     field public static final int MODE_NIGHT_AUTO = 0; // 0x0
     field public static final int MODE_NIGHT_NO = 1; // 0x1
     field public static final int MODE_NIGHT_YES = 2; // 0x2
+  }
+
+  public class VibrationPickerDialog extends android.app.DialogFragment {
+    ctor public VibrationPickerDialog();
+    method public static android.app.VibrationPickerDialog newInstance(android.os.Handler, boolean, java.lang.String);
+    method public void stopAllVibrations();
   }
 
   public final class WallpaperInfo implements android.os.Parcelable {
@@ -7291,10 +7313,10 @@ package android.content.res {
     field public static final int TOUCHSCREEN_NOTOUCH = 1; // 0x1
     field public static final deprecated int TOUCHSCREEN_STYLUS = 2; // 0x2
     field public static final int TOUCHSCREEN_UNDEFINED = 0; // 0x0
-    field public static final int UI_INVERTED_MODE_UNDEFINED = 0; // 0x0
-    field public static final int UI_INVERTED_MODE_NORMAL = 1; // 0x1
-    field public static final int UI_INVERTED_MODE_YES = 2; // 0x2
     field public static final int UI_INVERTED_MODE_NO = 3; // 0x3
+    field public static final int UI_INVERTED_MODE_NORMAL = 1; // 0x1
+    field public static final int UI_INVERTED_MODE_UNDEFINED = 0; // 0x0
+    field public static final int UI_INVERTED_MODE_YES = 2; // 0x2
     field public static final int UI_MODE_NIGHT_MASK = 48; // 0x30
     field public static final int UI_MODE_NIGHT_NO = 16; // 0x10
     field public static final int UI_MODE_NIGHT_UNDEFINED = 0; // 0x0
@@ -9650,9 +9672,14 @@ package android.graphics.drawable {
     method public boolean isOneShot();
     method public boolean isRunning();
     method public void run();
+    method public void setOnAnimationFinishedListener(android.graphics.drawable.AnimationDrawable.OnAnimationFinishedListener);
     method public void setOneShot(boolean);
     method public void start();
     method public void stop();
+  }
+
+  public static abstract interface AnimationDrawable.OnAnimationFinishedListener {
+    method public abstract void onAnimationFinished();
   }
 
   public class BitmapDrawable extends android.graphics.drawable.Drawable {
@@ -12430,6 +12457,7 @@ package android.media {
     method public static android.media.Ringtone getRingtone(android.content.Context, android.net.Uri);
     method public int getRingtonePosition(android.net.Uri);
     method public android.net.Uri getRingtoneUri(int);
+    method public static android.media.Ringtone getRingtoneWithoutProfile(android.content.Context, android.net.Uri);
     method public boolean getStopPreviousRingtone();
     method public static android.net.Uri getValidRingtoneUri(android.content.Context);
     method public int inferStreamType();
@@ -12607,6 +12635,27 @@ package android.media {
 
   public final class UnsupportedSchemeException extends android.media.MediaDrmException {
     ctor public UnsupportedSchemeException(java.lang.String);
+  }
+
+  public class VibrationPattern {
+    ctor public VibrationPattern(java.lang.String, java.util.ArrayList<java.lang.Long>, android.content.Context);
+    ctor public VibrationPattern(java.lang.String, java.lang.String, android.content.Context);
+    ctor public VibrationPattern(android.net.Uri, android.content.Context);
+    method public static android.media.VibrationPattern getFallbackVibration(android.content.Context);
+    method public int getLength();
+    method public java.lang.String getName();
+    method public long[] getPattern();
+    method public java.lang.String getPatternString();
+    method public static java.lang.String getPhoneVibration(android.content.Context);
+    method public android.net.Uri getUri();
+    method public void play();
+    method public void setName(java.lang.String);
+    method public void setPatternFromString(java.lang.String);
+    method public void setUri(android.net.Uri);
+    method public void stop();
+    field public static final java.lang.String FALLBACK_NAME = "FALLBACK";
+    field public static final java.lang.String FALLBACK_PATTERN = "0,250,250,250";
+    field public static final java.lang.String URI = "content://com.aokp.romcontrol.Vibrations/vibrations";
   }
 
 }
@@ -17991,6 +18040,70 @@ package android.preference {
     ctor public PreferenceCategory(android.content.Context);
   }
 
+  public abstract class PreferenceDrawerActivity extends android.app.ListActivity implements android.preference.PreferenceFragment.OnPreferenceStartFragmentCallback {
+    ctor public PreferenceDrawerActivity();
+    method public deprecated void addPreferencesFromIntent(android.content.Intent);
+    method public deprecated void addPreferencesFromResource(int);
+    method public deprecated android.preference.Preference findPreference(java.lang.CharSequence);
+    method public void finishPreferencePanel(android.app.Fragment, int, android.content.Intent);
+    method public deprecated android.preference.PreferenceManager getPreferenceManager();
+    method public deprecated android.preference.PreferenceScreen getPreferenceScreen();
+    method public boolean hasHeaders();
+    method public void invalidateHeaders();
+    method public boolean isMultiPane();
+    method public void loadHeadersFromResource(int, java.util.List<android.preference.PreferenceDrawerActivity.Header>);
+    method public void onBuildHeaders(java.util.List<android.preference.PreferenceDrawerActivity.Header>);
+    method public android.content.Intent onBuildStartFragmentIntent(java.lang.String, android.os.Bundle, int, int);
+    method public android.preference.PreferenceDrawerActivity.Header onGetInitialHeader();
+    method public android.preference.PreferenceDrawerActivity.Header onGetNewHeader();
+    method public void onHeaderClick(android.preference.PreferenceDrawerActivity.Header, int);
+    method public boolean onIsHidingHeaders();
+    method public boolean onIsMultiPane();
+    method public boolean onPreferenceStartFragment(android.preference.PreferenceFragment, android.preference.Preference);
+    method public deprecated boolean onPreferenceTreeClick(android.preference.PreferenceScreen, android.preference.Preference);
+    method public void setParentTitle(java.lang.CharSequence, java.lang.CharSequence, android.view.View.OnClickListener);
+    method public deprecated void setPreferenceScreen(android.preference.PreferenceScreen);
+    method public void showBreadCrumbs(java.lang.CharSequence, java.lang.CharSequence);
+    method public void startPreferenceFragment(android.app.Fragment, boolean);
+    method public void startPreferencePanel(java.lang.String, android.os.Bundle, int, java.lang.CharSequence, android.app.Fragment, int);
+    method public void startWithFragment(java.lang.String, android.os.Bundle, android.app.Fragment, int);
+    method public void startWithFragment(java.lang.String, android.os.Bundle, android.app.Fragment, int, int, int);
+    method public void switchToHeader(java.lang.String, android.os.Bundle);
+    method public void switchToHeader(android.preference.PreferenceDrawerActivity.Header);
+    field public static final java.lang.String EXTRA_NO_HEADERS = ":android:no_headers";
+    field public static final java.lang.String EXTRA_SHOW_FRAGMENT = ":android:show_fragment";
+    field public static final java.lang.String EXTRA_SHOW_FRAGMENT_ARGUMENTS = ":android:show_fragment_args";
+    field public static final java.lang.String EXTRA_SHOW_FRAGMENT_SHORT_TITLE = ":android:show_fragment_short_title";
+    field public static final java.lang.String EXTRA_SHOW_FRAGMENT_TITLE = ":android:show_fragment_title";
+    field public static final long HEADER_ID_UNDEFINED = -1L; // 0xffffffffffffffffL
+  }
+
+  public static final class PreferenceDrawerActivity.Header implements android.os.Parcelable {
+    ctor public PreferenceDrawerActivity.Header();
+    method public int describeContents();
+    method public java.lang.CharSequence getBreadCrumbShortTitle(android.content.res.Resources);
+    method public java.lang.CharSequence getBreadCrumbTitle(android.content.res.Resources);
+    method public java.lang.CharSequence getSummary(android.content.res.Resources);
+    method public java.lang.CharSequence getTitle(android.content.res.Resources);
+    method public void readFromParcel(android.os.Parcel);
+    method public void writeToParcel(android.os.Parcel, int);
+    field public static final android.os.Parcelable.Creator CREATOR;
+    field public java.lang.CharSequence breadCrumbShortTitle;
+    field public int breadCrumbShortTitleRes;
+    field public java.lang.CharSequence breadCrumbTitle;
+    field public int breadCrumbTitleRes;
+    field public android.os.Bundle extras;
+    field public java.lang.String fragment;
+    field public android.os.Bundle fragmentArguments;
+    field public int iconRes;
+    field public long id;
+    field public android.content.Intent intent;
+    field public java.lang.CharSequence summary;
+    field public int summaryRes;
+    field public java.lang.CharSequence title;
+    field public int titleRes;
+  }
+
   public abstract class PreferenceFragment extends android.app.Fragment {
     ctor public PreferenceFragment();
     method public void addPreferencesFromIntent(android.content.Intent);
@@ -18698,7 +18811,9 @@ package android.provider {
   }
 
   public static abstract deprecated interface Contacts.PeopleColumns {
+    field public static final deprecated java.lang.String CUSTOM_NOTIFICATION = "custom_notification";
     field public static final deprecated java.lang.String CUSTOM_RINGTONE = "custom_ringtone";
+    field public static final deprecated java.lang.String CUSTOM_VIBRATION = "custom_vibration";
     field public static final deprecated java.lang.String DISPLAY_NAME = "display_name";
     field public static final deprecated java.lang.String LAST_TIME_CONTACTED = "last_time_contacted";
     field public static final deprecated java.lang.String NAME = "name";
@@ -19050,7 +19165,9 @@ package android.provider {
   }
 
   protected static abstract interface ContactsContract.ContactOptionsColumns {
+    field public static final java.lang.String CUSTOM_NOTIFICATION = "custom_notification";
     field public static final java.lang.String CUSTOM_RINGTONE = "custom_ringtone";
+    field public static final java.lang.String CUSTOM_VIBRATION = "custom_vibration";
     field public static final java.lang.String LAST_TIME_CONTACTED = "last_time_contacted";
     field public static final java.lang.String SEND_TO_VOICEMAIL = "send_to_voicemail";
     field public static final java.lang.String STARRED = "starred";
@@ -19941,6 +20058,7 @@ package android.provider {
     field public static final java.lang.String RADIO_CELL = "cell";
     field public static final java.lang.String RADIO_NFC = "nfc";
     field public static final java.lang.String RADIO_WIFI = "wifi";
+    field public static final java.lang.String SHOW_CPU = "show_cpu";
     field public static final java.lang.String SHOW_PROCESSES = "show_processes";
     field public static final java.lang.String STAY_ON_WHILE_PLUGGED_IN = "stay_on_while_plugged_in";
     field public static final java.lang.String SYS_PROP_SETTING_VERSION = "sys.settings_global_version";
@@ -20013,6 +20131,7 @@ package android.provider {
     field public static final java.lang.String PARENTAL_CONTROL_ENABLED = "parental_control_enabled";
     field public static final java.lang.String PARENTAL_CONTROL_LAST_UPDATE = "parental_control_last_update";
     field public static final java.lang.String PARENTAL_CONTROL_REDIRECT_URL = "parental_control_redirect_url";
+    field public static final java.lang.String SCREENSAVER_ACTIVATE_ON_WIRELESS_CHARGE = "screensaver_activate_on_wireless_charger";
     field public static final java.lang.String SELECTED_INPUT_METHOD_SUBTYPE = "selected_input_method_subtype";
     field public static final java.lang.String SETTINGS_CLASSNAME = "settings_classname";
     field public static final java.lang.String SYS_PROP_SETTING_VERSION = "sys.settings_secure_version";
@@ -20053,6 +20172,7 @@ package android.provider {
 
   public static final class Settings.System extends android.provider.Settings.NameValueTable {
     ctor public Settings.System();
+    method public static java.util.ArrayList<java.lang.String> getArrayList(android.content.ContentResolver, java.lang.String);
     method public static void getConfiguration(android.content.ContentResolver, android.content.res.Configuration);
     method public static float getFloat(android.content.ContentResolver, java.lang.String, float);
     method public static float getFloat(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
@@ -20062,6 +20182,7 @@ package android.provider {
     method public static long getLong(android.content.ContentResolver, java.lang.String) throws android.provider.Settings.SettingNotFoundException;
     method public static deprecated boolean getShowGTalkServiceStatus(android.content.ContentResolver);
     method public static java.lang.String getString(android.content.ContentResolver, java.lang.String);
+    method public static synchronized java.lang.String getString(android.content.ContentResolver, java.lang.String, java.lang.String);
     method public static android.net.Uri getUriFor(java.lang.String);
     method public static boolean putConfiguration(android.content.ContentResolver, android.content.res.Configuration);
     method public static boolean putFloat(android.content.ContentResolver, java.lang.String, float);
@@ -20090,14 +20211,18 @@ package android.provider {
     field public static final android.net.Uri DEFAULT_ALARM_ALERT_URI;
     field public static final android.net.Uri DEFAULT_NOTIFICATION_URI;
     field public static final android.net.Uri DEFAULT_RINGTONE_URI;
+    field public static final android.net.Uri DEFAULT_VIBRATION_URI;
     field public static final deprecated java.lang.String DEVICE_PROVISIONED = "device_provisioned";
     field public static final deprecated java.lang.String DIM_SCREEN = "dim_screen";
     field public static final java.lang.String DTMF_TONE_WHEN_DIALING = "dtmf_tone";
+    field public static final java.lang.String[] ENABLE_RIBBON_LOCATION;
     field public static final java.lang.String END_BUTTON_BEHAVIOR = "end_button_behavior";
     field public static final java.lang.String FONT_SCALE = "font_scale";
     field public static final java.lang.String HAPTIC_FEEDBACK_ENABLED = "haptic_feedback_enabled";
+    field public static final java.lang.String HIDE_EXTRAS_SYSTEM_BAR = "hide_extras_system_bar";
     field public static final deprecated java.lang.String HTTP_PROXY = "http_proxy";
     field public static final deprecated java.lang.String INSTALL_NON_MARKET_APPS = "install_non_market_apps";
+    field public static final java.lang.String LED_BRIGHTNESS = "led_brightness";
     field public static final deprecated java.lang.String LOCATION_PROVIDERS_ALLOWED = "location_providers_allowed";
     field public static final deprecated java.lang.String LOCK_PATTERN_ENABLED = "lock_pattern_autolock";
     field public static final deprecated java.lang.String LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED = "lock_pattern_tactile_feedback_enabled";
@@ -20106,12 +20231,15 @@ package android.provider {
     field public static final deprecated java.lang.String MODE_RINGER = "mode_ringer";
     field public static final java.lang.String MODE_RINGER_STREAMS_AFFECTED = "mode_ringer_streams_affected";
     field public static final java.lang.String MUTE_STREAMS_AFFECTED = "mute_streams_affected";
+    field public static final java.lang.String NAVIGATION_BAR_WIDGETS = "navigation_bar_widgets";
     field public static final deprecated java.lang.String NETWORK_PREFERENCE = "network_preference";
     field public static final java.lang.String NEXT_ALARM_FORMATTED = "next_alarm_formatted";
+    field public static final java.lang.String NOTIFICATION_CONVERT_SOUND_TO_VIBRATION = "convert_sound_to_vibration";
     field public static final java.lang.String NOTIFICATION_SOUND = "notification_sound";
     field public static final deprecated java.lang.String PARENTAL_CONTROL_ENABLED = "parental_control_enabled";
     field public static final deprecated java.lang.String PARENTAL_CONTROL_LAST_UPDATE = "parental_control_last_update";
     field public static final deprecated java.lang.String PARENTAL_CONTROL_REDIRECT_URL = "parental_control_redirect_url";
+    field public static final java.lang.String PHONE_VIBRATION = "phone_vibration";
     field public static final deprecated java.lang.String RADIO_BLUETOOTH = "bluetooth";
     field public static final deprecated java.lang.String RADIO_CELL = "cell";
     field public static final deprecated java.lang.String RADIO_NFC = "nfc";
@@ -20126,15 +20254,21 @@ package android.provider {
     field public static final java.lang.String SETUP_WIZARD_HAS_RUN = "setup_wizard_has_run";
     field public static final java.lang.String SHOW_GTALK_SERVICE_STATUS = "SHOW_GTALK_SERVICE_STATUS";
     field public static final deprecated java.lang.String SHOW_PROCESSES = "show_processes";
-    field public static final java.lang.String SHOW_STATUSBAR_IME_SWITCHER = "show_statusbar_ime_switcher";
     field public static final deprecated java.lang.String SHOW_WEB_SUGGESTIONS = "show_web_suggestions";
     field public static final java.lang.String SOUND_EFFECTS_ENABLED = "sound_effects_enabled";
+    field public static final java.lang.String STATUSBAR_BATTERY_ICON = "statusbar_battery_icon";
+    field public static final java.lang.String STATUSBAR_SHOW_DATE = "statusbar_show_date";
+    field public static final java.lang.String STATUS_BAR_CIRCLE_BATTERY_ANIMATIONSPEED = "status_bar_circle_battery_animationspeed";
+    field public static final java.lang.String STATUS_BAR_CIRCLE_BATTERY_COLOR = "status_bar_circle_battery_color";
+    field public static final java.lang.String STATUS_BAR_CIRCLE_BATTERY_RESET = "status_bar_circle_battery_reset";
+    field public static final java.lang.String STATUS_BAR_CIRCLE_BATTERY_TEXT_COLOR = "status_bar_circle_battery_text_color";
     field public static final deprecated java.lang.String STAY_ON_WHILE_PLUGGED_IN = "stay_on_while_plugged_in";
     field public static final java.lang.String SYS_PROP_SETTING_VERSION = "sys.settings_system_version";
     field public static final java.lang.String TEXT_AUTO_CAPS = "auto_caps";
     field public static final java.lang.String TEXT_AUTO_PUNCTUATE = "auto_punctuate";
     field public static final java.lang.String TEXT_AUTO_REPLACE = "auto_replace";
     field public static final java.lang.String TEXT_SHOW_PASSWORD = "show_password";
+    field public static final java.lang.String THEME_WALLPAPER = "theme_wallpaper";
     field public static final java.lang.String TIME_12_24 = "time_12_24";
     field public static final deprecated java.lang.String TRANSITION_ANIMATION_SCALE = "transition_animation_scale";
     field public static final deprecated java.lang.String USB_MASS_STORAGE_ENABLED = "usb_mass_storage_enabled";
@@ -29146,6 +29280,34 @@ package android.widget {
     method public abstract void onCheckedChanged(android.widget.CompoundButton, boolean);
   }
 
+  public class CoverFlow extends android.widget.AbsSpinner implements android.view.GestureDetector.OnGestureListener {
+    ctor public CoverFlow(android.content.Context);
+    ctor public CoverFlow(android.content.Context, android.util.AttributeSet);
+    ctor public CoverFlow(android.content.Context, android.util.AttributeSet, int);
+    method public boolean getCoverFlowStyle();
+    method public boolean onDown(android.view.MotionEvent);
+    method public boolean onFling(android.view.MotionEvent, android.view.MotionEvent, float, float);
+    method public void onLongPress(android.view.MotionEvent);
+    method public boolean onScroll(android.view.MotionEvent, android.view.MotionEvent, float, float);
+    method public void onShowPress(android.view.MotionEvent);
+    method public boolean onSingleTapUp(android.view.MotionEvent);
+    method public void release();
+    method public void setAnimationDuration(int);
+    method public void setCallbackDuringFling(boolean);
+    method public void setCoverflowStyle(boolean);
+    method public void setDataSize(int);
+    method public void setGravity(int);
+    method public void setRadius(int);
+    method public void setSpacing(int);
+    method public void setUnselectedAlpha(float);
+  }
+
+  public static class CoverFlow.LayoutParams extends android.view.ViewGroup.LayoutParams {
+    ctor public CoverFlow.LayoutParams(android.content.Context, android.util.AttributeSet);
+    ctor public CoverFlow.LayoutParams(int, int);
+    ctor public CoverFlow.LayoutParams(android.view.ViewGroup.LayoutParams);
+  }
+
   public abstract class CursorAdapter extends android.widget.BaseAdapter implements android.widget.Filterable {
     ctor public deprecated CursorAdapter(android.content.Context, android.database.Cursor);
     ctor public CursorAdapter(android.content.Context, android.database.Cursor, boolean);
@@ -29251,6 +29413,68 @@ package android.widget {
   public deprecated class DigitalClock extends android.widget.TextView {
     ctor public DigitalClock(android.content.Context);
     ctor public DigitalClock(android.content.Context, android.util.AttributeSet);
+  }
+
+  public class DrawerLayout extends android.view.ViewGroup {
+    ctor public DrawerLayout(android.content.Context);
+    ctor public DrawerLayout(android.content.Context, android.util.AttributeSet);
+    ctor public DrawerLayout(android.content.Context, android.util.AttributeSet, int);
+    method public void closeDrawer(android.view.View);
+    method public void closeDrawer(int);
+    method public void closeDrawers();
+    method public int getDrawerLockMode(int);
+    method public int getDrawerLockMode(android.view.View);
+    method public boolean isDrawerOpen(android.view.View);
+    method public boolean isDrawerOpen(int);
+    method public boolean isDrawerVisible(android.view.View);
+    method public boolean isDrawerVisible(int);
+    method protected void onLayout(boolean, int, int, int, int);
+    method public void openDrawer(android.view.View);
+    method public void openDrawer(int);
+    method public void setDrawerListener(android.widget.DrawerLayout.DrawerListener);
+    method public void setDrawerLockMode(int);
+    method public void setDrawerLockMode(int, int);
+    method public void setDrawerLockMode(int, android.view.View);
+    method public void setDrawerShadow(android.graphics.drawable.Drawable, int);
+    method public void setDrawerShadow(int, int);
+    method public void setScrimColor(int);
+    field public static final int LOCK_MODE_LOCKED_CLOSED = 1; // 0x1
+    field public static final int LOCK_MODE_LOCKED_OPEN = 2; // 0x2
+    field public static final int LOCK_MODE_UNLOCKED = 0; // 0x0
+    field public static final int STATE_DRAGGING = 1; // 0x1
+    field public static final int STATE_IDLE = 0; // 0x0
+    field public static final int STATE_SETTLING = 2; // 0x2
+  }
+
+  public static abstract interface DrawerLayout.DrawerListener {
+    method public abstract void onDrawerClosed(android.view.View);
+    method public abstract void onDrawerOpened(android.view.View);
+    method public abstract void onDrawerSlide(android.view.View, float);
+    method public abstract void onDrawerStateChanged(int);
+  }
+
+  public static class DrawerLayout.LayoutParams extends android.view.ViewGroup.MarginLayoutParams {
+    ctor public DrawerLayout.LayoutParams(android.content.Context, android.util.AttributeSet);
+    ctor public DrawerLayout.LayoutParams(int, int);
+    ctor public DrawerLayout.LayoutParams(int, int, int);
+    ctor public DrawerLayout.LayoutParams(android.widget.DrawerLayout.LayoutParams);
+    ctor public DrawerLayout.LayoutParams(android.view.ViewGroup.LayoutParams);
+    ctor public DrawerLayout.LayoutParams(android.view.ViewGroup.MarginLayoutParams);
+    field public int gravity;
+  }
+
+  protected static class DrawerLayout.SavedState extends android.view.View.BaseSavedState {
+    ctor public DrawerLayout.SavedState(android.os.Parcel);
+    ctor public DrawerLayout.SavedState(android.os.Parcelable);
+    field public static final android.os.Parcelable.Creator CREATOR;
+  }
+
+  public static abstract class DrawerLayout.SimpleDrawerListener implements android.widget.DrawerLayout.DrawerListener {
+    ctor public DrawerLayout.SimpleDrawerListener();
+    method public void onDrawerClosed(android.view.View);
+    method public void onDrawerOpened(android.view.View);
+    method public void onDrawerSlide(android.view.View, float);
+    method public void onDrawerStateChanged(int);
   }
 
   public class EdgeEffect {
@@ -30937,6 +31161,66 @@ package android.widget {
     method public void setOutAnimation(android.content.Context, int);
     method public void showNext();
     method public void showPrevious();
+  }
+
+  public class ViewDragHelper {
+    method public void abort();
+    method protected boolean canScroll(android.view.View, boolean, int, int, int, int);
+    method public void cancel();
+    method public void captureChildView(android.view.View, int);
+    method public boolean checkTouchSlop(int);
+    method public boolean checkTouchSlop(int, int);
+    method public boolean continueSettling(boolean);
+    method public static android.widget.ViewDragHelper create(android.view.ViewGroup, android.widget.ViewDragHelper.Callback);
+    method public static android.widget.ViewDragHelper create(android.view.ViewGroup, float, android.widget.ViewDragHelper.Callback);
+    method public android.view.View findTopChildUnder(int, int);
+    method public void flingCapturedView(int, int, int, int);
+    method public int getActivePointerId();
+    method public android.view.View getCapturedView();
+    method public int getEdgeSize();
+    method public float getMinVelocity();
+    method public int getTouchSlop();
+    method public int getViewDragState();
+    method public boolean isCapturedViewUnder(int, int);
+    method public boolean isEdgeTouched(int);
+    method public boolean isEdgeTouched(int, int);
+    method public boolean isPointerDown(int);
+    method public boolean isViewUnder(android.view.View, int, int);
+    method public void processTouchEvent(android.view.MotionEvent);
+    method public void setEdgeTrackingEnabled(int);
+    method public void setMinVelocity(float);
+    method public boolean settleCapturedViewAt(int, int);
+    method public boolean shouldInterceptTouchEvent(android.view.MotionEvent);
+    method public boolean smoothSlideViewTo(android.view.View, int, int);
+    field public static final int DIRECTION_ALL = 3; // 0x3
+    field public static final int DIRECTION_HORIZONTAL = 1; // 0x1
+    field public static final int DIRECTION_VERTICAL = 2; // 0x2
+    field public static final int EDGE_ALL = 15; // 0xf
+    field public static final int EDGE_BOTTOM = 8; // 0x8
+    field public static final int EDGE_LEFT = 1; // 0x1
+    field public static final int EDGE_RIGHT = 2; // 0x2
+    field public static final int EDGE_TOP = 4; // 0x4
+    field public static final int INVALID_POINTER = -1; // 0xffffffff
+    field public static final int STATE_DRAGGING = 1; // 0x1
+    field public static final int STATE_IDLE = 0; // 0x0
+    field public static final int STATE_SETTLING = 2; // 0x2
+  }
+
+  public static abstract class ViewDragHelper.Callback {
+    ctor public ViewDragHelper.Callback();
+    method public int clampViewPositionHorizontal(android.view.View, int, int);
+    method public int clampViewPositionVertical(android.view.View, int, int);
+    method public int getOrderedChildIndex(int);
+    method public int getViewHorizontalDragRange(android.view.View);
+    method public int getViewVerticalDragRange(android.view.View);
+    method public void onEdgeDragStarted(int, int);
+    method public boolean onEdgeLock(int);
+    method public void onEdgeTouched(int, int);
+    method public void onViewCaptured(android.view.View, int);
+    method public void onViewDragStateChanged(int);
+    method public void onViewPositionChanged(android.view.View, int, int, int, int);
+    method public void onViewReleased(android.view.View, float, float);
+    method public abstract boolean tryCaptureView(android.view.View, int);
   }
 
   public class ViewFlipper extends android.widget.ViewAnimator {
