@@ -33,7 +33,11 @@ import android.os.Handler;
 import com.android.systemui.R;
 import com.android.internal.util.aokp.StatusBarHelpers;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+
+import libcore.icu.ICU;
 
 public class DateViewCenter extends TextView {
     private static final String TAG = "DateViewCenter";
@@ -61,8 +65,11 @@ public class DateViewCenter extends TextView {
     }
 
     protected void updateClock() {
-        final String dateFormat = getContext().getString(R.string.abbrev_wday_month_day_no_year);
-        setText(DateFormat.format(dateFormat, new Date()));
+        final String dateFormat = getContext().getString(R.string.system_ui_date_pattern);
+        final Locale l = Locale.getDefault();
+        String fmt = ICU.getBestDateTimePattern(dateFormat, l.toString());
+        SimpleDateFormat sdf = new SimpleDateFormat(fmt, l);
+        setText(sdf.format(new Date()));
     }
     
     @Override

@@ -630,7 +630,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                         // Already bound to the service. Just make
                         // sure we trigger off processing the first request.
                         if (idx == 0) {
-                            sendEmptyMessage(MCS_BOUND);
+                            mHandler.sendEmptyMessage(MCS_BOUND);
                         }
                     }
                     break;
@@ -665,9 +665,10 @@ public class PackageManagerService extends IPackageManager.Stub {
                                         if (DEBUG_SD_INSTALL) Log.i(TAG,
                                                 "Posting delayed MCS_UNBIND");
                                         removeMessages(MCS_UNBIND);
+                                        Message ubmsg = obtainMessage(MCS_UNBIND);
                                         // Unbind after a little delay, to avoid
                                         // continual thrashing.
-                                        sendEmptyMessageDelayed(MCS_UNBIND, 10000);
+                                        sendMessageDelayed(ubmsg, 10000);
                                     }
                                 } else {
                                     // There are more pending requests in queue.
@@ -675,7 +676,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                                     // of next pending install.
                                     if (DEBUG_SD_INSTALL) Log.i(TAG,
                                             "Posting MCS_BOUND for next woek");
-                                    sendEmptyMessage(MCS_BOUND);
+                                    mHandler.sendEmptyMessage(MCS_BOUND);
                                 }
                             }
                         }
@@ -716,7 +717,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                         // There are more pending requests in queue.
                         // Just post MCS_BOUND message to trigger processing
                         // of next pending install.
-                        sendEmptyMessage(MCS_BOUND);
+                        mHandler.sendEmptyMessage(MCS_BOUND);
                     }
 
                     break;
@@ -966,7 +967,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                         }
 
                         processPendingInstall(args, ret);
-                        sendEmptyMessage(MCS_UNBIND);
+                        mHandler.sendEmptyMessage(MCS_UNBIND);
                     }
                     break;
                 }
@@ -1004,7 +1005,7 @@ public class PackageManagerService extends IPackageManager.Stub {
 
                         processPendingInstall(args, ret);
 
-                        sendEmptyMessage(MCS_UNBIND);
+                        mHandler.sendEmptyMessage(MCS_UNBIND);
                     }
 
                     break;
@@ -1812,6 +1813,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                 final PackageSetting ps = (PackageSetting)p.mExtras;
                 final SharedUserSetting suid = ps.sharedUser;
                 int[] gids = suid != null ? suid.gids : ps.gids;
+
                 // include GIDs for any unenforced permissions
                 if (!isPermissionEnforcedLocked(READ_EXTERNAL_STORAGE, enforcedDefault)) {
                     final BasePermission basePerm = mSettings.mPermissions.get(

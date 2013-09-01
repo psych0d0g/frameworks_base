@@ -89,7 +89,7 @@ public class LocationController extends BroadcastReceiver {
         final String action = intent.getAction();
         final boolean enabled = intent.getBooleanExtra(LocationManager.EXTRA_GPS_ENABLED, false);
 
-        boolean visible, hasFix;;
+        boolean visible, hasFix;
         int iconId, textResId;
 
         if (action.equals(LocationManager.GPS_FIX_CHANGE_ACTION) && enabled) {

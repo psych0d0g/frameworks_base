@@ -1307,7 +1307,7 @@ public class NetworkController extends BroadcastReceiver {
          || mLastWimaxIconId                != mWimaxIconId
          || mLastDataTypeIconId             != mDataTypeIconId
          || mLastAirplaneMode               != mAirplaneMode
-         || mLastHideAllSignals             != mHideAllSignals)
+         || mLastHideAllSignals             != mHideAllSignals
          || mLastLocale                     != mLocale)
         {
             // NB: the mLast*s will be updated later
