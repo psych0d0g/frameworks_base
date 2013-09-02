@@ -817,7 +817,9 @@ class ServerThread extends Thread {
             }
         }
 
-        // make sure the ADB_ENABLED setting value matches the secure property value
+        // for bringup to force adb enabled
+        //Settings.Secure.putInt(mContentResolver, Settings.Secure.ADB_ENABLED, 1);
+
         Settings.Secure.putInt(mContentResolver, Settings.Secure.ADB_PORT,
                 Integer.parseInt(SystemProperties.get("service.adb.tcp.port", "-1")));
 
