@@ -2552,11 +2552,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     } else {
                         Log.i(TAG, "Ignoring HOME; event canceled.");
                     }
+                    return -1;
                 }
-
-                // Go home!
-                launchHomeFromHotKey();
-                return -1;
             }
 
             // If a system window has focus, then it doesn't make sense
