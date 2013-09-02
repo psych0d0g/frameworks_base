@@ -106,7 +106,9 @@ public class KeyguardViewManager {
         public void onChange(boolean selfChange) {
             updateSettings();
             setKeyguardParams();
-            mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
+            if (mKeyguardHost != null){
+                mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
+            }
         }
     }
 
