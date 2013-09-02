@@ -212,9 +212,9 @@ public class SignalClusterView
         if (mWifiGroup == null) return;
 
         if (mWifiVisible) {
+            mWifiGroup.setVisibility(View.VISIBLE);
             mWifi.setImageResource(mWifiStrengthId);
             mWifiActivity.setImageResource(mWifiActivityId);
-
             mWifiGroup.setContentDescription(mWifiDescription);
             if (showingWiFiText){
                 mWifi.setVisibility(View.GONE);
@@ -235,10 +235,10 @@ public class SignalClusterView
                     mWifiStrengthId, mWifiActivityId));
 
         if (mMobileVisible && !mIsAirplaneMode) {
+            mMobileGroup.setVisibility(View.VISIBLE);
             mMobile.setImageResource(mMobileStrengthId);
             mMobileActivity.setImageResource(mMobileActivityId);
             mMobileType.setImageResource(mMobileTypeId);
-
             mMobileGroup.setContentDescription(mMobileTypeDescription + " " + mMobileDescription);
             if (showingSignalText && !mIsAirplaneMode) {
                 mMobile.setVisibility(View.GONE);
@@ -252,8 +252,8 @@ public class SignalClusterView
         }
 
         if (mIsAirplaneMode) {
-            mAirplane.setImageResource(mAirplaneIconId);
             mAirplane.setVisibility(View.VISIBLE);
+            mAirplane.setImageResource(mAirplaneIconId);
         } else {
             mAirplane.setVisibility(View.GONE);
         }
