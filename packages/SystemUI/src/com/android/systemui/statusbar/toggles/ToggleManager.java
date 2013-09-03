@@ -348,7 +348,7 @@ public class ToggleManager {
                             toggle);
                 }
             } catch (Exception e) {
-                log("error adding toggle", e);
+                Log.e(TAG, "error adding toggle", e);
             }
         }
     }

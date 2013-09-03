@@ -12,6 +12,8 @@ import com.android.systemui.R;
 
 public class BluetoothToggle extends StatefulToggle {
 
+    private BluetoothAdapter mBluetoothAdapter;
+    
     public void init(Context c, int style) {
         super.init(c, style);
 
@@ -19,6 +21,7 @@ public class BluetoothToggle extends StatefulToggle {
         if (bt == null) {
             return;
         }
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         onBluetoothChanged();
 
         IntentFilter filter = new IntentFilter();
@@ -35,15 +38,13 @@ public class BluetoothToggle extends StatefulToggle {
     }
 
     private void onBluetoothChanged() {
-        final BluetoothAdapter bt = (BluetoothAdapter) mContext
-                .getSystemService(Context.BLUETOOTH_SERVICE);
         String label = null;
         int iconId = 0;
         State newState = getState();
-        switch (bt.getState()) {
+        switch (mBluetoothAdapter.getState()) {
             case BluetoothAdapter.STATE_ON:
                 newState = State.ENABLED;
-                switch (bt.getConnectionState()) {
+                switch (mBluetoothAdapter.getConnectionState()) {
                     case BluetoothAdapter.STATE_CONNECTED:
                         iconId = R.drawable.ic_qs_bluetooth_on;
                         label = mContext.getString(R.string.quick_settings_bluetooth_label);
