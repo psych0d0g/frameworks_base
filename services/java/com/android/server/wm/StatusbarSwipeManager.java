@@ -4,6 +4,7 @@ import android.provider.Settings;
 import android.os.Handler;
 import android.util.Log;
 import android.content.Context;
+import android.content.Intent;
 
 public class StatusbarSwipeManager {
 
@@ -15,6 +16,8 @@ public class StatusbarSwipeManager {
     private Context mContext;
     private Runnable mRunnable;
     private Handler mHandler;
+    
+    private static final String ACTION_STATUSBAR_SWIPE = "com.android.server.wm.ACTION_STATUSBAR_SWIPE";
     
     public static StatusbarSwipeManager getInstance(){
         if (mInstance == null){
@@ -34,8 +37,10 @@ public class StatusbarSwipeManager {
     private Runnable getRunnable(){
         return new Runnable() {
             public void run() {
-                Settings.System.putBoolean(mContext.getContentResolver(), 
-                     Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, false);
+                Intent intent = new Intent(ACTION_STATUSBAR_SWIPE);
+                intent.setFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
+                intent.putExtra("state", 0);
+                mContext.sendBroadcast(intent);
                 done();
             }               
         };
@@ -48,12 +53,17 @@ public class StatusbarSwipeManager {
     
     public void startTimer(){
         if (DEBUG) Log.d(TAG, "startTimer mRunnable="+mRunnable);
-        stopTimer();
+        if (mRunnable != null){
+            stopTimer();
+        }
 
-        Settings.System.putBoolean(mContext.getContentResolver(), 
-            Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, true);
-        
         mRunnable = getRunnable();
+        
+        Intent intent = new Intent(ACTION_STATUSBAR_SWIPE);
+        intent.setFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
+        intent.putExtra("state", 1);
+        mContext.sendBroadcast(intent);
+        
         mHandler.postDelayed(mRunnable, getDelay());
     }
     

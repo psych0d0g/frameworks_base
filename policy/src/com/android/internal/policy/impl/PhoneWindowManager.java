@@ -1238,8 +1238,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // register for WIFI Display intents
         IntentFilter wifiDisplayFilter = new IntentFilter(
                                                 Intent.ACTION_WIFI_DISPLAY_VIDEO);
-        Intent wifidisplayIntent = context.registerReceiver(
-                                      mWifiDisplayReceiver, wifiDisplayFilter);
+        context.registerReceiver(mWifiDisplayReceiver, wifiDisplayFilter);
+
+        // register for statusbar swipe intents
+        IntentFilter statusbarSwipeFilter = new IntentFilter("com.android.server.wm.ACTION_STATUSBAR_SWIPE");
+        context.registerReceiver(mStatusbarSwipeReceiver, statusbarSwipeFilter);
 
         mLongPressVibePattern = getLongIntArray(mContext.getResources(),
                 com.android.internal.R.array.config_longPressVibePattern);
@@ -4894,9 +4897,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     };
 
-    BroadcastReceiver mThemeChangeReceiver = new BroadcastReceiver() {
+    BroadcastReceiver mStatusbarSwipeReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            mUiContext = null;
+            String action = intent.getAction();
+            if (action.equals("com.android.server.wm.ACTION_STATUSBAR_SWIPE")) {
+                int state = intent.getIntExtra("state", 0);
+                Log.d(TAG, "com.android.server.wm.ACTION_STATUSBAR_SWIPE state=" + state); 
+                if(state == 1) {
+                    Settings.System.putBoolean(mContext.getContentResolver(), 
+                        Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, true);
+                } else {
+                    Settings.System.putBoolean(mContext.getContentResolver(), 
+                        Settings.System.STATUSBAR_SHOW_HIDDEN_WITH_SWIPE, false);
+                }
+            }
         }
     };
 
