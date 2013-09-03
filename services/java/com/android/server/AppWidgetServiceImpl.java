@@ -998,6 +998,7 @@ class AppWidgetServiceImpl {
             intent.setComponent(p.info.provider);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id.appWidgetId);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, id.options);
+            intent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY_BEFORE_BOOT);
             mContext.sendBroadcastAsUser(intent, new UserHandle(mUserId));
             saveStateAsync();
         }
