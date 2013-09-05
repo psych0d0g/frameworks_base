@@ -65,7 +65,7 @@ public class DateViewCenter extends TextView {
     }
 
     protected void updateClock() {
-        final String dateFormat = getContext().getString(R.string.system_ui_date_pattern);
+        final String dateFormat = getContext().getString(R.string.icu_abbrev_wday_abbrev_month_day_no_year);
         final Locale l = Locale.getDefault();
         String fmt = ICU.getBestDateTimePattern(dateFormat, l.toString());
         SimpleDateFormat sdf = new SimpleDateFormat(fmt, l);
