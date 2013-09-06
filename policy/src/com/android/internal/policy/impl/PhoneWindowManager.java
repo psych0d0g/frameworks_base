@@ -293,7 +293,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mSystemBooted;
     boolean mHdmiPlugged;
     boolean mWifiDisplayConnected;
-
     int mUiMode;
     int mDockMode = Intent.EXTRA_DOCK_STATE_UNDOCKED;
     int mLidOpenRotation;
@@ -906,7 +905,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     };
 
-    Runnable mKillAppHandler = new Runnable() {
+    Runnable mKillTask = new Runnable() {
         public void run() {
             final Intent intent = new Intent(Intent.ACTION_MAIN);
             final ActivityManager am = (ActivityManager)mContext
@@ -1025,7 +1024,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH);
                     break;
                 case KEY_ACTION_KILL_APP:
-                    mHandler.postDelayed(mKillAppHandler, mBackKillTimeout);
+                    mHandler.postDelayed(mKillTask, mBackKillTimeout);
                     break;
                 case KEY_ACTION_LAST_APP:
                     toggleLastApp();
@@ -1197,7 +1196,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 com.android.internal.R.integer.config_lidNavigationAccessibility);
         mLidControlsSleep = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_lidControlsSleep);
-
         mBackKillTimeout = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_backKillTimeout);
         mDeviceHardwareKeys = mContext.getResources().getInteger(
@@ -1396,7 +1394,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             /*
              * at first boot up, we need to make sure navbar gets created
              * (or obey framework setting).
-             * this should quickly get over-ridden by the settings observer	
+             * this should quickly get over-ridden by the settings observer
              * if it was disabled by the user.
             */
             if (mNavBarFirstBootFlag) {
@@ -3347,7 +3345,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     // It's a system nav bar or a portrait screen; nav bar goes on bottom.
                     int top = displayHeight - overscanBottom
                             - mNavigationBarHeightForRotation[displayRotation];
-
                     mTmpNavigationFrame.set(0, top, displayWidth, displayHeight - overscanBottom);
 					mStableBottom = mStableFullscreenBottom = mTmpNavigationFrame.top;
                     if (navVisible) {
@@ -3857,10 +3854,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         df.bottom = of.bottom = cf.bottom = mContentBottom;
                     }
                     if (adjust != SOFT_INPUT_ADJUST_NOTHING) {
-                        vf.left = mRestrictedScreenLeft;
-                        vf.top =  mRestrictedScreenTop;
-                        vf.right = mRestrictedScreenLeft+mRestrictedScreenWidth;
-                        vf.bottom = mRestrictedScreenTop+mRestrictedScreenHeight;;
+                        vf.left = mCurLeft;
+                        vf.top = mCurTop;
+                        vf.right = mCurRight;
+                        vf.bottom = mCurBottom;
                     } else {
                         vf.set(cf);
                     }
@@ -4032,7 +4029,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // and mTopIsFullscreen is that that mTopIsFullscreen is set only if the window
                 // has the FLAG_FULLSCREEN set.  Not sure if there is another way that to be the
                 // case though.
-                
                 if (!mIsShowingHiddenWithSwipe && (topIsFullscreen || mStatusbarHidden)) {
                     if (DEBUG_LAYOUT) Log.v(TAG, "** HIDING status bar");
                     if (mStatusBar.hideLw(true)) {
@@ -5092,7 +5088,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 // Ignore sensor when plugged into HDMI and an undocked orientation has
                 // been specified in the configuration (only for legacy devices without
                 // full multi-display support).
-                // Note that the dock orientation overrides the HDMI orientation.
+                // or Wifi display is connected
+                // Note that the dock orientation overrides the HDMI/Wifi
+                // orientation.
                 preferredRotation = mUndockedHdmiRotation;
             } else if (orientation == ActivityInfo.SCREEN_ORIENTATION_LOCKED) {
                 // Application just wants to remain locked in the last rotation.
@@ -5116,7 +5114,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mAllowAllRotations = mContext.getResources().getBoolean(
                             com.android.internal.R.bool.config_allowAllRotations) ? 1 : 0;
                 }
-
                 // Rotation setting bitmask
                 // 1=0 2=90 4=180 8=270
                 boolean allowed = true;
