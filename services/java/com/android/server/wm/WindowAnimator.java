@@ -216,7 +216,8 @@ public class WindowAnimator {
         ArrayList<WindowStateAnimator> unForceHiding = null;
         boolean wallpaperInUnForceHiding = false;
         mForceHiding = KEYGUARD_NOT_SHOWN;
-
+        int lockscreenSeeThrough = Settings.System.getInt(mContext.getContentResolver(),
+                                Settings.System.LOCKSCREEN_SEE_THROUGH, 0);
         for (int i = windows.size() - 1; i >= 0; i--) {
             WindowState win = windows.get(i);
             WindowStateAnimator winAnimator = win.mWinAnimator;
@@ -256,8 +257,7 @@ public class WindowAnimator {
                         mService.mFocusMayChange = true;
                     }
                     if (win.isReadyForDisplay()) {
-                        if(Settings.System.getInt(mContext.getContentResolver(),
-                                Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 0) {
+                        if(lockscreenSeeThrough == 0) {
                             if (nowAnimating) {
                                 if (winAnimator.mAnimationIsEntrance) {
                                     mForceHiding = KEYGUARD_ANIMATING_IN;
