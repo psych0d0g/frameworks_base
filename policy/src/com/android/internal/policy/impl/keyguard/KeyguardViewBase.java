@@ -163,10 +163,9 @@ public abstract class KeyguardViewBase extends FrameLayout {
      * Called before this view is being removed.
      */
     public void cleanUp() {
-        if (bitmapWallpaper != null)
+        if (bitmapWallpaper != null){
             bitmapWallpaper.recycle();
-
-        System.gc();
+        }
     }
 
     /**
