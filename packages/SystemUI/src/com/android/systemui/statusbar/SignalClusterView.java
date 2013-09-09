@@ -62,8 +62,6 @@ public class SignalClusterView
     private boolean showingWiFiText = false;
     private int mFontSize;
 
-    private boolean showingAltCluster = false;
-
     ViewGroup mWifiGroup, mMobileGroup;
     ImageView mWifi, mMobile, mWifiActivity, mMobileActivity, mMobileType, mAirplane;
     TextView mMobileText,mWiFiText;
@@ -277,11 +275,6 @@ public class SignalClusterView
 
         mMobileType.setVisibility(
                 !mWifiVisible ? View.VISIBLE : View.GONE);
-        if (showingAltCluster) {
-            this.setVisibility((this.getId() == R.id.signal_cluster) ? View.GONE : View.VISIBLE);
-        } else {
-            this.setVisibility((this.getId() == R.id.signal_cluster) ? View.VISIBLE : View.GONE);
-        }
     }
 
     class SettingsObserver extends ContentObserver {
@@ -318,9 +311,7 @@ public class SignalClusterView
                 Settings.System.STATUSBAR_SIGNAL_TEXT,STYLE_HIDE) > 0);
         showingWiFiText = Settings.System.getInt(resolver,
                 Settings.System.STATUSBAR_WIFI_SIGNAL_TEXT, 0) != 0;
-        boolean clustdefault = getResources().getBoolean(R.bool.statusbar_alt_signal_layout);
-        showingAltCluster = Settings.System.getBoolean(resolver,
-                Settings.System.STATUSBAR_SIGNAL_CLUSTER_ALT, clustdefault);
+
         if (fontSize != mFontSize) {
             mFontSize = fontSize;
             mWiFiText.setTextSize(mFontSize);
