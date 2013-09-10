@@ -38,7 +38,6 @@
         android:paddingStart="6dip"
         android:paddingBottom="2dip"
         android:src="@drawable/ic_sysbar_lights_out_dot_small"
-        android:scaleType="center"
         android:visibility="gone"
         />
 
@@ -66,7 +65,6 @@
                 android:src="@drawable/stat_notify_more"
                 android:visibility="gone"
                 android:gravity="center_vertical"
-                android:scaleType="fitCenter"
                 />
 
             <com.android.systemui.statusbar.phone.IconMerger android:id="@+id/notificationIcons"
@@ -173,17 +171,14 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginRight="4dip"
-            android:scaleType="fitCenter"
             >
             <com.android.systemui.statusbar.AnimatedImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:scaleType="fitCenter"
                 />
             <com.android.systemui.statusbar.AnimatedImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:scaleType="fitCenter"
                 />
         </ImageSwitcher>
         <com.android.systemui.statusbar.phone.TickerView android:id="@+id/tickerText"
