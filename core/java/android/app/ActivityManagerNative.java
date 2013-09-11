@@ -461,6 +461,15 @@ public abstract class ActivityManagerNative extends Binder implements IActivityM
             return true;
         }
 
+        case GET_CALLING_PACKAGE_FOR_BROADCAST_TRANSACTION: {
+            data.enforceInterface(IActivityManager.descriptor);
+            boolean foreground = data.readInt() == 1 ? true : false;
+            String res = getCallingPackageForBroadcast(foreground);
+            reply.writeNoException();
+            reply.writeString(res);
+            return true;
+        }
+
         case GET_CALLING_ACTIVITY_TRANSACTION: {
             data.enforceInterface(IActivityManager.descriptor);
             IBinder token = data.readStrongBinder();
@@ -1843,15 +1852,6 @@ public abstract class ActivityManagerNative extends Binder implements IActivityM
             return true;
         }
 
-        case IS_PRIVACY_GUARD_ENABLED_TRANSACTION: {
-            data.enforceInterface(IActivityManager.descriptor);
-            int pid = data.readInt();
-            boolean res = isPrivacyGuardEnabledForProcess(pid);
-            reply.writeNoException();
-            reply.writeInt(res ? 1 : 0);
-            return true;
-        }
-
         case GET_TOP_ACTIVITY_EXTRAS_TRANSACTION: {
             data.enforceInterface(IActivityManager.descriptor);
             int requestType = data.readInt();
@@ -1885,6 +1885,15 @@ public abstract class ActivityManagerNative extends Binder implements IActivityM
             boolean allowRestart = data.readInt() != 0;
             hang(who, allowRestart);
             reply.writeNoException();
+            return true;
+        }
+
+        case IS_PRIVACY_GUARD_ENABLED_TRANSACTION: {
+            data.enforceInterface(IActivityManager.descriptor);
+            int pid = data.readInt();
+            boolean res = isPrivacyGuardEnabledForProcess(pid);
+            reply.writeNoException();
+            reply.writeInt(res ? 1 : 0);
             return true;
         }
 
@@ -2366,6 +2375,19 @@ class ActivityManagerProxy implements IActivityManager
         data.writeInterfaceToken(IActivityManager.descriptor);
         data.writeStrongBinder(token);
         mRemote.transact(GET_CALLING_PACKAGE_TRANSACTION, data, reply, 0);
+        reply.readException();
+        String res = reply.readString();
+        data.recycle();
+        reply.recycle();
+        return res;
+    }
+    public String getCallingPackageForBroadcast(boolean foreground) throws RemoteException
+    {
+        Parcel data = Parcel.obtain();
+        Parcel reply = Parcel.obtain();
+        data.writeInterfaceToken(IActivityManager.descriptor);
+        data.writeInt(foreground ? 1 : 0);
+        mRemote.transact(GET_CALLING_PACKAGE_FOR_BROADCAST_TRANSACTION, data, reply, 0);
         reply.readException();
         String res = reply.readString();
         data.recycle();
@@ -4251,19 +4273,6 @@ class ActivityManagerProxy implements IActivityManager
         return res;
     }
 
-    public boolean isPrivacyGuardEnabledForProcess(int pid) throws RemoteException {
-        Parcel data = Parcel.obtain();
-        Parcel reply = Parcel.obtain();
-        data.writeInterfaceToken(IActivityManager.descriptor);
-        data.writeInt(pid);
-        mRemote.transact(IS_PRIVACY_GUARD_ENABLED_TRANSACTION, data, reply, 0);
-        reply.readException();
-        int res = reply.readInt();
-        data.recycle();
-        reply.recycle();
-        return res == 1;
-    }
-
     public Bundle getTopActivityExtras(int requestType) throws RemoteException {
         Parcel data = Parcel.obtain();
         Parcel reply = Parcel.obtain();
@@ -4311,6 +4320,19 @@ class ActivityManagerProxy implements IActivityManager
         reply.readException();
         data.recycle();
         reply.recycle();
+    }
+
+    public boolean isPrivacyGuardEnabledForProcess(int pid) throws RemoteException {
+        Parcel data = Parcel.obtain();
+        Parcel reply = Parcel.obtain();
+        data.writeInterfaceToken(IActivityManager.descriptor);
+        data.writeInt(pid);
+        mRemote.transact(IS_PRIVACY_GUARD_ENABLED_TRANSACTION, data, reply, 0);
+        reply.readException();
+        int res = reply.readInt();
+        data.recycle();
+        reply.recycle();
+        return res == 1;
     }
 
     private IBinder mRemote;
