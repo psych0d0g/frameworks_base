@@ -1641,6 +1641,9 @@ public class NetworkController extends BroadcastReceiver {
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.STATUSBAR_HIDE_ALL_SIGNAL_BARS), false,
                     this);
+            resolver.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.NOTIFICATION_SHOW_WIFI_SSID), false, 
+                    this);
                     
             updateSettings();
         }
