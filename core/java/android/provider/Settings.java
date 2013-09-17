@@ -3059,6 +3059,15 @@ public final class Settings {
          */
         public static final String SCREEN_STATE_MOBILE_DATA = "screen_state_mobile_data";
 
+        /**
+         * @hide
+         */
+        public static final String WAKELOCK_BLOCKING_ENABLED = "wakelock_blocking_enabled";
+
+        /**
+         * @hide
+         */
+        public static final String WAKELOCK_BLOCKING_LIST = "wakelock_blocking_list";
 
         /**
          * ListView Animations
