@@ -693,7 +693,9 @@ public final class PowerManagerService extends IPowerManager.Stub
             boolean blockWakelock = false;
  
             if (!mSeenWakeLocks.contains(tag)){
-                mSeenWakeLocks.add(tag);
+                if ((flags & PowerManager.WAKE_LOCK_LEVEL_MASK) == PowerManager.PARTIAL_WAKE_LOCK){
+                    mSeenWakeLocks.add(tag);
+                }
             }
             
             if (mWakeLockBlockingEnabled == 1){
@@ -706,6 +708,7 @@ public final class PowerManagerService extends IPowerManager.Stub
             int index = findWakeLockIndexLocked(lock);
             if (index >= 0) {
                 wakeLock = mWakeLocks.get(index);
+                wakeLock.setIsBlocked(blockWakelock);
                 if (!wakeLock.hasSameProperties(flags, tag, ws, uid, pid)) {
                     // Update existing wake lock.  This shouldn't happen but is harmless.
                     notifyWakeLockReleasedLocked(wakeLock);
@@ -719,11 +722,10 @@ public final class PowerManagerService extends IPowerManager.Stub
                 } catch (RemoteException ex) {
                     throw new IllegalArgumentException("Wake lock is already dead.");
                 }
+                wakeLock.setIsBlocked(blockWakelock);
                 notifyWakeLockAcquiredLocked(wakeLock);
                 mWakeLocks.add(wakeLock);
             }
-
-            wakeLock.setIsBlocked(blockWakelock);
                 
             applyWakeLockFlagsOnAcquireLocked(wakeLock);
             mDirty |= DIRTY_WAKE_LOCKS;
@@ -884,15 +886,19 @@ public final class PowerManagerService extends IPowerManager.Stub
 
     private void notifyWakeLockAcquiredLocked(WakeLock wakeLock) {
         if (mSystemReady) {
-            mNotifier.onWakeLockAcquired(wakeLock.mFlags, wakeLock.mTag,
+            if (!wakeLock.isBlocked()){
+                mNotifier.onWakeLockAcquired(wakeLock.mFlags, wakeLock.mTag,
                     wakeLock.mOwnerUid, wakeLock.mOwnerPid, wakeLock.mWorkSource);
+            }
         }
     }
 
     private void notifyWakeLockReleasedLocked(WakeLock wakeLock) {
         if (mSystemReady) {
-            mNotifier.onWakeLockReleased(wakeLock.mFlags, wakeLock.mTag,
+            if (!wakeLock.isBlocked()){
+                mNotifier.onWakeLockReleased(wakeLock.mFlags, wakeLock.mTag,
                     wakeLock.mOwnerUid, wakeLock.mOwnerPid, wakeLock.mWorkSource);
+            }
         }
     }
 
@@ -1362,12 +1368,14 @@ public final class PowerManagerService extends IPowerManager.Stub
             final int numWakeLocks = mWakeLocks.size();
             for (int i = 0; i < numWakeLocks; i++) {
                 final WakeLock wakeLock = mWakeLocks.get(i);
-                if (wakeLock.isBlocked()){
-                    Slog.d(TAG, "updateWakeLockSummaryLocked: blocked tag=" + tag);
-                	continue;
-               	}
                 switch (wakeLock.mFlags & PowerManager.WAKE_LOCK_LEVEL_MASK) {
                     case PowerManager.PARTIAL_WAKE_LOCK:
+                        if (wakeLock.isBlocked()){
+                            //Slog.d(TAG, "updateWakeLockSummaryLocked: PARTIAL_WAKE_LOCK blocked tag=" + wakeLock.mTag);
+                	        continue;
+               	        }
+
+                        //Slog.d(TAG, "updateWakeLockSummaryLocked: PARTIAL_WAKE_LOCK tag=" + wakeLock.mTag);
                         mWakeLockSummary |= WAKE_LOCK_CPU;
                         break;
                     case PowerManager.FULL_WAKE_LOCK:
