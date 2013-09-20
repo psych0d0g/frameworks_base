@@ -917,7 +917,7 @@ final class DisplayPowerController {
                 mProximitySensorEnabled = true;
                 mPendingProximity = PROXIMITY_UNKNOWN;
                 mSensorManager.registerListener(mProximitySensorListener, mProximitySensor,
-                        SensorManager.SENSOR_DELAY_NORMAL, mHandler);
+                        SensorManager.SENSOR_DELAY_UI, mHandler);
             }
         } else {
             if (mProximitySensorEnabled) {
