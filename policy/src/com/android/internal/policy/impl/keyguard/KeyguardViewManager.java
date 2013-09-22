@@ -439,8 +439,9 @@ public class KeyguardViewManager {
             }
         }
 
+        // maxwen: always respect screen timeout from settings
         // Otherwise, use the default timeout.
-        mWindowLayoutParams.userActivityTimeout = KeyguardViewMediator.AWAKE_INTERVAL_DEFAULT_MS;
+        //mWindowLayoutParams.userActivityTimeout = KeyguardViewMediator.AWAKE_INTERVAL_DEFAULT_MS;
     }
 
     private void maybeEnableScreenRotation(boolean enableScreenRotation) {
