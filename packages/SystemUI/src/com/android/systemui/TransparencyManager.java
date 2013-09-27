@@ -163,6 +163,28 @@ public class TransparencyManager {
         return anim;
     }
 
+    private void setBackground(final SomeInfo info, View v) {
+        float a = 1;
+
+        if (info.tempDisable) {
+            info.tempDisable = false;
+        } else if (mIsKeyguardShowing) {
+            a = info.keyguardAlpha;
+        } else if (mIsHomeShowing) {
+            a = info.homeAlpha;
+        }
+
+        final float alpha = a;
+        if (v.getBackground() instanceof BackgroundAlphaColorDrawable) {
+            final BackgroundAlphaColorDrawable bg = (BackgroundAlphaColorDrawable) v
+                    .getBackground();
+            bg.setAlpha(BackgroundAlphaColorDrawable.floatAlphaToInt(alpha));
+        } else {
+            // custom image is set by the theme, let's just apply the alpha if we can.
+            v.getBackground().setAlpha(BackgroundAlphaColorDrawable.floatAlphaToInt(alpha));
+        }
+    }
+    
     private void doTransparentUpdate() {
         mIsKeyguardShowing = isKeyguardShowing();
         mIsHomeShowing = isLauncherShowing();
@@ -184,6 +206,18 @@ public class TransparencyManager {
             } else if(sbAnim != null) {
                 sbAnim.start();
             }
+        }
+    }
+
+    private void doTransparentUpdateHard() {
+        mIsKeyguardShowing = isKeyguardShowing();
+        mIsHomeShowing = isLauncherShowing();
+
+        if (mNavbar != null) {
+            setBackground(mNavbarInfo, mNavbar);
+        }
+        if (mStatusbar != null) {
+            setBackground(mStatusbarInfo, mStatusbar);
         }
     }
 
