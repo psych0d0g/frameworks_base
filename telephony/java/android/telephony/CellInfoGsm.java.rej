@@ -1,0 +1,11 @@
+--- telephony/java/android/telephony/CellInfoGsm.java
++++ telephony/java/android/telephony/CellInfoGsm.java
+@@ -48,7 +48,7 @@
+     public CellIdentityGsm getCellIdentity() {
+         return mCellIdentityGsm;
+     }
+-    /** @hide */
++
+     public void setCellIdentity(CellIdentityGsm cid) {
+         mCellIdentityGsm = cid;
+     }
