@@ -127,19 +127,15 @@ public class BridgePowerManager implements IPowerManager {
     
     @Override
     public int getCurrentScreenBrightnessValue(){
-        // pass for now
         return -1;
     }
 
     @Override
-    public int getCurrentButtonBrightnessValue(){       
-        // pass for now
+    public int getCurrentButtonBrightnessValue(){
         return -1;
     }
 
-    @Override    
-    public boolean isUsingAutoBrightness(){
-        // pass for now
-        return false;
+    @Override
+    public void setButtonBrightness(int brightness){
     }
 }

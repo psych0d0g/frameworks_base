@@ -1855,62 +1855,63 @@ public final class Settings {
         public static final int SCREEN_BRIGHTNESS_MODE_AUTOMATIC = 1;
 
         /**
-         * Indicates that custom light sensor settings has changed. The value is
-         * random and changes reloads light settings.
-         *
-         * @hide
-         */
-        public static final String LIGHTS_CHANGED = "lights_changed";
-
-        /**
-         * Whether custom light sensor levels & values are enabled. The value is
-         * boolean (1 or 0).
-         *
-         * @hide
-         */
-        public static final String LIGHT_SENSOR_CUSTOM = "light_sensor_custom";
-
-        /**
-         * Custom light sensor levels. The value is a comma separated int array
-         * with length N.
+         * Custom automatic brightness light sensor levels.
+         * The value is a comma separated int array with length N.
          * Example: "100,300,3000".
          *
          * @hide
          */
-        public static final String LIGHT_SENSOR_LEVELS = "light_sensor_levels";
+        public static final String AUTO_BRIGHTNESS_LUX = "auto_brightness_lux";
 
         /**
-         * Custom light sensor lcd values. The value is a comma separated int array
-         * with length N+1.
+         * Custom automatic brightness display backlight brightness values.
+         * The value is a comma separated int array with length N+1.
          * Example: "10,50,100,255".
          *
          * @hide
          */
-        public static final String LIGHT_SENSOR_LCD_VALUES = "light_sensor_lcd_values";
+        public static final String AUTO_BRIGHTNESS_SCREEN_BACKLIGHT = "auto_brightness_screen_backlight";
 
         /**
-         * Custom light sensor lcd values. The value is a comma separated int array
-         * with length N+1.
+         * Custom automatic brightness display backlight brightness values.
+         * The value is a comma separated int array with length N+1.
          * Example: "10,50,100,255".
          *
          * @hide
          */
-        public static final String LIGHT_SENSOR_BUTTON_VALUES = "light_sensor_button_values";
+        public static final String AUTO_BRIGHTNESS_BUTTON_BACKLIGHT = "auto_brightness_button_backlight";
+
+        /**
+         * Correction factor for auto-brightness adjustment light sensor
+         * debounce times.
+         * Smaller factors will make the adjustment more responsive, but might
+         * cause flicker and/or cause higher CPU usage.
+         * Valid range is 0.2 ... 3
+         *
+         * @hide
+         */
+        public static final String AUTO_BRIGHTNESS_RESPONSIVENESS = "auto_brightness_responsiveness";
 
         /**
          * Custom button brightness value for manual mode
          *
          * @hide
          */
-        public static final String BUTTON_BRIGHTNESS = "button_brightness";
-        
+        public static final String CUSTOM_BUTTON_BRIGHTNESS = "custom_button_brightness";
+
         /**
-         * use same value for buttons as for screen in manual mode
+         * use same value for buttons as for screen (manual and auto mode)
          *
          * @hide
          */
-        public static final String BUTTON_USE_SCREEN_BRIGHTNESS = "button_use_screen_brightness";
-                
+        public static final String CUSTOM_BUTTON_USE_SCREEN_BRIGHTNESS = "custom_button_use_screen_brightness";
+
+        /**
+         * disable all button brightness (manual and auto mode)
+         *
+         * @hide
+         */
+        public static final String CUSTOM_BUTTON_DISABLE_BRIGHTNESS = "custom_button_use_disable_brightness";
         
         /**
          * should any charging led be disabled
@@ -1943,17 +1944,6 @@ public final class Settings {
          * into an inaudible ringer mode.
          */
         public static final String MODE_RINGER_STREAMS_AFFECTED = "mode_ringer_streams_affected";
-
-        /**
-         * Correction factor for auto-brightness adjustment light sensor
-         * debounce times.
-         * Smaller factors will make the adjustment more responsive, but might
-         * cause flicker and/or cause higher CPU usage.
-         * Valid range is 0.2 ... 3
-         *
-         * @hide
-         */
-        public static final String AUTO_BRIGHTNESS_RESPONSIVENESS = "auto_brightness_responsiveness";
 
          /**
           * Determines which streams are affected by mute. The
