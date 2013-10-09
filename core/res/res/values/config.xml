@@ -1168,6 +1168,9 @@
     <!-- If this is true, the CM torch will be used. -->
     <bool name="config_useCMTorch">false</bool>
 
+    <!-- If this is true, the Omni torch will be used. -->
+    <bool name="config_useOmniTorch">false</bool>
+
     <!-- Class name of the framework account picker activity.
          Can be customized for other product types -->
     <string name="config_chooseAccountActivity"

@@ -182,10 +182,14 @@ public class AwesomeAction {
             case ACTION_TORCH:
                 boolean useCMTorch = mContext.getResources().getBoolean(
                     com.android.internal.R.bool.config_useCMTorch);
+                boolean useOmniTorch = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_useOmniTorch);
 
                 if(useCMTorch){
             	    mContext.sendBroadcast(new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT"));
-            	} else {
+                } else if(useOmniTorch){
+                    mContext.sendBroadcast(new Intent("org.omnirom.torch.TOGGLE_FLASHLIGHT"));
+                } else {
                     Intent intentTorch = new Intent("android.intent.action.MAIN");
                     intentTorch.setComponent(ComponentName.unflattenFromString("com.aokp.Torch/.TorchActivity"));
                     intentTorch.addCategory("android.intent.category.LAUNCHER");

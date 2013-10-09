@@ -2016,7 +2016,8 @@
   <java-symbol type="anim" name="recents_fade_out" />
 
   <java-symbol type="bool" name="config_useCMTorch" />
-
+  <java-symbol type="bool" name="config_useOmniTorch" />
+  
   <!-- Privacy Guard -->
   <java-symbol type="string" name="privacy_guard_notification" />
   <java-symbol type="string" name="privacy_guard_notification_detail" />
