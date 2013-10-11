@@ -54,10 +54,9 @@ interface IPowerManager
 
     void cpuBoost(int duration);
     
-    // custom light levels
     int getCurrentScreenBrightnessValue();
-    int getCurrentButtonBrightnessValue();    
-    boolean isUsingAutoBrightness();
+    int getCurrentButtonBrightnessValue();
+    void setButtonBrightness(int brightness);
     
     // blocked wakelock support
     String getSeenWakeLocks();
