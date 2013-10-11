@@ -283,6 +283,7 @@
   <java-symbol type="bool" name="config_dontPreferApn" />
   <java-symbol type="bool" name="config_speed_up_audio_on_mt_calls" />
   <java-symbol type="bool" name="config_useFixedVolume" />
+  <java-symbol type="bool" name="config_show4GForLTE" />
 
   <java-symbol type="integer" name="config_cursorWindowSize" />
   <java-symbol type="integer" name="config_longPressOnPowerBehavior" />
@@ -1549,6 +1550,7 @@
   <java-symbol type="array" name="config_autoBrightnessKeyboardBacklightValues" />
   <java-symbol type="array" name="config_autoBrightnessLcdBacklightValues" />
   <java-symbol type="array" name="config_autoBrightnessLevels" />
+  <java-symbol type="bool" name="config_button_brightness_support" />
   <java-symbol type="array" name="config_protectedNetworks" />
   <java-symbol type="array" name="config_statusBarIcons" />
   <java-symbol type="array" name="config_tether_bluetooth_regexs" />
@@ -2015,7 +2017,8 @@
   <java-symbol type="anim" name="recents_fade_out" />
 
   <java-symbol type="bool" name="config_useCMTorch" />
-
+  <java-symbol type="bool" name="config_useOmniTorch" />
+  
   <!-- Privacy Guard -->
   <java-symbol type="string" name="privacy_guard_notification" />
   <java-symbol type="string" name="privacy_guard_notification_detail" />

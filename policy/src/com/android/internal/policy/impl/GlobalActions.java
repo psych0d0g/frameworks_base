@@ -410,9 +410,13 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 public void onPress() {
                     boolean useCMTorch = mContext.getResources().getBoolean(
                         com.android.internal.R.bool.config_useCMTorch);
-                
+                    boolean useOmniTorch = mContext.getResources().getBoolean(
+                        com.android.internal.R.bool.config_useOmniTorch);
+
                     if(useCMTorch){
             	        mContext.sendBroadcast(new Intent("net.cactii.flash2.TOGGLE_FLASHLIGHT"));
+                    } else if(useOmniTorch){
+                        mContext.sendBroadcast(new Intent("org.omnirom.torch.TOGGLE_FLASHLIGHT"));
             	    } else {
                         Intent intent = new Intent("android.intent.action.MAIN");
                         intent.setComponent(ComponentName.unflattenFromString("com.aokp.Torch/.TorchActivity"));

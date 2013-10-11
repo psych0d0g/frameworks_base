@@ -616,6 +616,9 @@
     <integer-array name="config_autoBrightnessButtonBacklightValues">
     </integer-array>
 
+    <!-- Boolean indicating whether we want button brightness support -->
+    <bool name="config_button_brightness_support">false</bool>
+
     <!-- Array of output values for keyboard backlight corresponding to the LUX values
          in the config_autoBrightnessLevels array.  This array should have size one greater
          than the size of the config_autoBrightnessLevels array.
@@ -1165,6 +1168,9 @@
     <!-- If this is true, the CM torch will be used. -->
     <bool name="config_useCMTorch">false</bool>
 
+    <!-- If this is true, the Omni torch will be used. -->
+    <bool name="config_useOmniTorch">false</bool>
+
     <!-- Class name of the framework account picker activity.
          Can be customized for other product types -->
     <string name="config_chooseAccountActivity"
@@ -1200,4 +1206,7 @@
     <!-- The list of components which should be automatically disabled. -->
     <string-array name="config_disabledComponents" translatable="false">
     </string-array>
+
+    <!-- Should "4G" be shown instead of "LTE" when the network is NETWORK_TYPE_LTE? -->
+    <bool name="config_show4GForLTE">true</bool>
 </resources>
