@@ -25,6 +25,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.BroadcastReceiver;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -63,12 +64,14 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
-public class AwesomeAction {
+public class AwesomeAction extends BroadcastReceiver {
 
     public final static String TAG = "AwesomeAction";
     private final static String SysUIPackage = "com.android.systemui";
-
-    private AwesomeAction() {
+	public static final String TOGGLE_FLASHLIGHT = "org.omnirom.torch.TOGGLE_FLASHLIGHT";
+	public static final String TOGGLE_FLASHLIGHT2 = "net.cactii.flash2.TOGGLE_FLASHLIGHT";	
+	
+    public AwesomeAction() {
     }
 
     public static boolean launchAction(Context mContext, String action) {
@@ -353,4 +356,15 @@ public class AwesomeAction {
             }
         }
     };
+
+	@Override
+	public void onReceive(Context context, Intent receivingIntent) {
+		if (receivingIntent.getAction().equals(TOGGLE_FLASHLIGHT) ||
+		    receivingIntent.getAction().equals(TOGGLE_FLASHLIGHT2)) {
+            boolean enabled = Settings.System.getBoolean(context.getContentResolver(),
+                Settings.System.TORCH_STATE, false);
+            Settings.System.putBoolean(context.getContentResolver(),
+                Settings.System.TORCH_STATE, !enabled);
+		}
+	}
 }
