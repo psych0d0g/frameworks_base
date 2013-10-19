@@ -110,6 +110,9 @@
             </intent-filter>
         </service>
 
+        <receiver android:name=".screenshot.TrashScreenshot"
+                android:exported="true" />
+
         <service android:name=".LoadAverageService"
                 android:exported="true" />
 
@@ -391,5 +394,13 @@
                 <category android:name="android.intent.category.DESK_DOCK" />
             </intent-filter>
         </activity>
+        
+        <receiver android:name="com.android.systemui.aokp.AwesomeAction" 
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="org.omnirom.torch.TOGGLE_FLASHLIGHT"></action>
+            </intent-filter>
+        </receiver>
+
     </application>
 </manifest>
